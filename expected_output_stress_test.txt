@@ -1,0 +1,65 @@
+small n=40: q = 0.706751927397, k = 10
+small n=50: q = 0.703694627087, k = 12
+small n=55: q = 0.702532663224, k = 14
+small n=70: q = 0.699927441736, k = 17
+small n=100: q = 0.696818594535, k = 25
+small n=150: q = 0.694131485985, k = 37
+small n=200: q = 0.692648924528, k = 49
+small n=300: q = 0.691018903643, k = 73
+cert n=300: q = 0.691018908239, k = 73
+cert n=500: q = 0.68954231094, k = 121
+cert n=1000: q = 0.688245154929, k = 243
+
+Smallest slack per inequality (relative where scaled; must be >= 0, > 0 for strict):
+  L2(i) |c_{t-1}-t b_t| <= q B_{t-1}                                                  4.986e-15  (small n=40)
+  (14') |2D_{t-1}-t c_t| <= q C_{t-1}                                                 4.986e-15  (small n=40)
+  L2(iii) |c_{t-1}-t b_t| >= |c_{t-1}| sin a_t                                         2.467e-8  (small n=300)
+  (star) |c_{t-1}| >= (1-1/s2) + B_{t-1}/s2                                                 0.0  (small n=40)
+  alpha_k < pi/2                                                                         0.7795  (small n=55)
+  L2(iv) |c_{k-1}| < s2 q B_{k-1}                                                        0.1785  (small n=40)
+  L3(i) lower Ka B_{t-1} <= t|b_t|                                                       0.6636  (cert n=1000)
+  L3(i) upper t|b_t| <= Kb B_{t-1}                                                       0.5281  (cert n=1000)
+  L3(ii) lower                                                                           0.5454  (cert n=1000)
+  L3(ii) upper                                                                            52.25  (cert n=1000)
+  L3(iii) lower (u/s)^Ka                                                                    0.0  (small n=40)
+  L3(iii) upper (u/s)^(1+q)                                                                 0.0  (small n=40)
+  Cor1 B_{k-1} > M                                                                        8.782  (small n=40)
+  Cor1 k > M^(1/(1+q))                                                                    8.999  (small n=40)
+  L4 upper |c_{t-1}| <= B_{t-1}/s2 + s2 d B_{k-1}                                        0.1785  (small n=40)
+  1/k < kappa                                                                             0.899  (small n=40)
+  Cor2 (8') with 1/k                                                                     0.8793  (cert n=1000)
+  Cor2 m_4(y) with kappa                                                                    0.0  (small n=40)
+  L5(i) sum_{H_a}|b_t| <= f1 B_{k-1}                                                     0.9753  (cert n=1000)
+  L5(ii-b) |c_{t-1}| - B_{t-1}/s2 <= f2b B_{t-1}                                         0.1848  (small n=40)
+  L5(ii-a) |t|b_t| - B_{t-1}/2| <= f2a B_{t-1}                                           0.3832  (small n=40)
+  (13) P_t + A_t = t B_t                                                            -4.842e-201  (cert n=500)
+  (11) |P_t - A_t/2| <= t f3 B_{k-1}                                                      28.61  (cert n=1000)
+  (12') 0 <= C_{t-1} - A_t/s2                                                           0.07875  (cert n=1000)
+  (12') C_{t-1} - A_t/s2 <= t s2 d B_{k-1}                                                0.207  (small n=40)
+  L6 |rho_t| <= f5' X_t (t<k)                                                              78.6  (cert n=1000)
+  K4 C_{t-1} >= t B_t/(s2(2+q))                                                          0.3968  (cert n=1000)
+  L6 |rho_k| <= f5'' X_k (t=k)                                                             85.7  (cert n=1000)
+  L7 beta_t <= pi/8                                                                     0.02014  (small n=40)
+  L7 (S1) beta_t <= beta* = asin(q)/2                                                   0.01753  (small n=150)
+  (17) h_t >= cos beta*                                                                0.008239  (cert n=1000)
+  (17) h_t <= 1                                                                             0.0  (small n=40)
+  (18a) h_{t+1} >= h_t + (cos b_t - h_t)|c_t|/C_t                                      3.219e-6  (cert n=1000)
+  (18b) (S5) |c_t|/C_t >= 1/(s2 (t+1))                                                   0.4706  (small n=40)
+  (19') (S2) cos b_t >= F(h_t) - (f7+|rho_t|)/(6 h_t)                                   0.03085  (cert n=1000)
+  (19') with f_8 X_t                                                                     4817.0  (cert n=1000)
+  (19') at t=k with f_8^(k)                                                              4818.0  (cert n=1000)
+  L8(ii) fallback cos b_k >= 1 - (g9/3 + f_8^(k))                                        4818.0  (cert n=1000)
+  (38') actual: |sum c_j S_{k-j} - D/2| <= [3/2(1-h)+3/2 sqrt(2(1-cos b_k))+|rho_k|] C       0.2055  (cert n=1000)
+  (38') with f_11 (fallback g_9)                                                         2.7e+4  (cert n=1000)
+  (40') sum|t_j| = 1/h                                                              -3.266e-201  (cert n=500)
+  (41') sum||t_j|-t_j| <= sqrt(2(1-h))/h                                                0.07013  (small n=40)
+  (42') |sum|t_j|S - 1/2| <= E38/h + q sum||t|-t|                                        0.4021  (cert n=1000)
+  (3) at t=k: sum b_j S_{k-j} = c_{k-1} - k b_k                                     -7.455e-173  (small n=300)
+  Hc claim (q-c) T_c <= f15 (actual)                                                      1.029  (cert n=1000)
+  Claim B                                                                                0.2202  (small n=40)
+  (43) sum_{H_c}|b_j| <= m_4(y) B                                                           0.0  (small n=40)
+  Claim A |S_{k-j} - 1/2| < f18 off H_c                                               0.0004501  (cert n=1000)
+  (S8) contrapositive: |c_{k-1}/2 - k b_k| > B_{k-1}/4                                   0.2443  (cert n=1000)
+  Biro (45)-(47) contrapositive: > (2-s2)/4 B_{k-1}                                      0.3479  (cert n=1000)
+
+50 inequalities tested; 0 violated.

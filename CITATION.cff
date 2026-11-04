@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this result, please cite it as below."
+title: "An explicit lower bound in Turán's pure power sum problem"
+abstract: >-
+  An explicit form of A. Biró's lower bound (Indag. Math. (N.S.) 11 (2000), 343-358) in Turán's pure power
+  sum problem (Erdős problem #519; constant C42 of the Optimization Constants repository): R_n > 1/2 +
+  2^(-32176926823186696) for every n, hence R_n > 1/2 + 10^(-10^16). The method is Biró's; his constants are
+  made explicit and the final inequalities are verified in Arb ball arithmetic. Unrefereed; made with
+  substantial help from an AI model (Claude Opus 5.5, Anthropic).
+authors:
+  - family-names: Bakeas
+    given-names: Vasileios
+    affiliation: "Department of Mechanical Engineering, University of Thessaly, Volos, Greece"
+    email: bakeasb@gmail.com
+    orcid: "https://orcid.org/0009-0002-9714-9372"
+type: software
+version: 1.0.0
+repository-code: "https://github.com/Bakeas/turan-explicit-lower-bound"
+license:
+  - MIT
+  - CC-BY-4.0

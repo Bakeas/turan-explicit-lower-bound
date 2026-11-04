@@ -1,0 +1,1048 @@
+\documentclass[11pt]{amsart}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{plain}
+\newtheorem*{namedthm*}{\protect\mythmname}
+\newcommand{\mythmname}{}
+\newenvironment{named}[1]{\renewcommand{\mythmname}{#1}\begin{namedthm*}}{\end{namedthm*}}
+
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\eps}{\varepsilon}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\newcommand{\Ka}{K_1^{(\mathrm{i})}}
+\newcommand{\Kb}{K_2^{(\mathrm{i})}}
+\newcommand{\Kc}{K_1^{(\mathrm{ii})}}
+\newcommand{\Kd}{K_2^{(\mathrm{ii})}}
+\newcommand{\NO}{32\,176\,926\,823\,186\,696}
+\newcommand{\NI}{318\,600\,000\,000\,000\,000\,400}
+\newcommand{\Bir}{\cite{Bir00b}}
+\renewcommand{\urladdrname}{{\itshape ORCID}}
+
+\begin{document}
+
+\title{An explicit lower bound in Tur\'an's pure power sum problem}
+
+\author{Vasileios Bakeas}
+\address{Department of Mechanical Engineering, University of Thessaly, Volos, Greece}
+\email{bakeasb@gmail.com}
+\urladdr{https://orcid.org/0009-0002-9714-9372}
+
+\date{November 2026. Unrefereed.}
+
+\subjclass[2020]{Primary 11N30; Secondary 30A10, 65G30}
+\keywords{Tur\'an's pure power sum problem, power sums, Erd\H{o}s problem \#519, explicit constants, interval arithmetic}
+
+\begin{abstract}
+For $n\ge 1$ let $R_n=\min\max_{1\le k\le n}\abs{z_1^k+\dots+z_n^k}$, the minimum being over all complex numbers $z_1=1,z_2,\dots,z_n$. This is Tur\'an's pure power sum problem (Erd\H{o}s problem \#519). In 2000 Bir\'o proved that $R_n>q$ for every $n$, where $q>1/2$ is an effectively computable absolute constant, but he did not compute a value of~$q$. Following his proof step by step and making every constant in it explicit, we show that
+\[
+R_n>\tfrac12+2^{-\NO}\qquad\text{for every } n;
+\]
+in particular $R_n>1/2+10^{-10^{16}}$. The method is entirely Bir\'o's. Inside his argument we add a few sharpenings, all of which are listed. With his own versions of the angle bound (Lemma~7) and of the final step, the same computation gives $R_n>1/2+2^{-\NI}$. The final numerical inequalities are verified in ball arithmetic. The work was done with substantial help from an AI model; it has not been refereed.
+\end{abstract}
+
+\maketitle
+
+%======================================================================
+\section{Introduction}\label{sec:intro}
+
+For complex numbers $z_1,\dots,z_n$ write $S_k=z_1^k+\dots+z_n^k$ and put
+\[
+  R_n=\min_{z_1=1,\;z_2,\dots,z_n\in\mathbb C}\ \max_{1\le k\le n}\abs{S_k}.
+\]
+Bir\'o defines $R_n$ with the normalization $\max_j\abs{z_j}=1$, and notes that the minimum exists by compactness and that this normalization can be replaced by $z_1=1$ \cite[\S1]{Bir00b}. Tur\'an conjectured that $R_n$ is bounded below by a positive constant independent of~$n$, and asked for the best such constant \cite{Tur84}. This is Erd\H{o}s problem \#519 \cite{Blo}, and $\limsup R_n$ is the constant $C_{42}$ of the Optimization Constants repository~\cite{Tao}. Atkinson proved the conjecture with the constant $1/6$ \cite{Atk61} and later improved it to $\pi/8$ \cite{Atk69}. Bir\'o proved $R_n>1/2$ \cite{Bir94}, and then the following.
+
+\begin{named}{Theorem (Bir\'o \cite{Bir00b})}
+There is an effectively computable absolute constant $q>1/2$ such that $\max_{1\le j\le n}\abs{S_j}>q$ for every $n$ and all complex numbers $z_1=1,z_2,\dots,z_n$.
+\end{named}
+
+Bir\'o remarks that a concrete value of $q$ could be obtained by following the steps of his proof, but he does not compute one \cite[\S1]{Bir00b}. The entry for $C_{42}$ in \cite{Tao} records that this value is not known, and the forum page of Erd\H{o}s problem \#519 asks for it \cite{Blo}. In the other direction, Bir\'o proved $\limsup R_n<1$ \cite{Bir00}; see \cite{Tao} for the current upper bounds. In this note we compute an explicit value.
+
+\begin{theorem}\label{thm:main}
+For every $n\ge1$ and all complex numbers $z_1=1,z_2,\dots,z_n$,
+\[
+  \max_{1\le k\le n}\abs{z_1^k+\dots+z_n^k}>\frac12+2^{-N_0},\qquad N_0=\NO .
+\]
+Consequently $R_n>\frac12+2^{-N_0}>\frac12+10^{-10^{16}}$ for every $n$.
+\end{theorem}
+
+\begin{theorem}\label{thm:cons}
+The conclusion of Theorem~\ref{thm:main} also holds with $N_0$ replaced by
+\[
+N_1=\NI,
+\]
+so that $R_n>\frac12+10^{-10^{20}}$, by a proof that uses Bir\'o's own Lemma~7 ($\beta_t\le\pi/8$) and his own final step (45)--(47).
+\end{theorem}
+
+\subsection*{Credit}
+The method and all of its ideas are A.~Bir\'o's \cite{Bir00b}. We follow his proof step by step, give an explicit admissible value to every implicit constant in it (the $K_i$, $m_i$, $f_i$, the $O$-terms and the conditions ``large enough'' or ``small enough''), and verify the resulting finite list of inequalities rigorously at one choice of parameters. Inside his argument we add ten small changes S1--S10 that improve some constants; none of them changes the method. Section~\ref{sec:new} lists every step that is not in \cite{Bir00b}, with proofs, and Table~\ref{tab:uses} shows which changes each of Theorems~\ref{thm:main} and~\ref{thm:cons} uses.
+
+\subsection*{Why the bound is so close to $1/2$}
+The following estimates are floating-point approximations at the parameters of Theorem~\ref{thm:main}; they are only a guide and are not used in any proof. Write $\delta=q-1/2$. Three features of the argument determine the size of $N_0$.
+\begin{enumerate}[label=(\roman*)]
+\item Lemma~8 of \cite{Bir00b} shows that $h_k=\abs{D_{k-1}}/C_{k-1}$ is close to $1$ (notation in Section~\ref{sec:biro}), but only at a logarithmic rate: $1-h_k\le g_9\approx 3K_{11}/\log(1/\delta)$ with $K_{11}\approx0.108$.
+\item In (38) and (41) of \cite{Bir00b} this deviation enters through square roots, so the final error term is $f_{15}\approx1.93\sqrt{g_9}$.
+\item Corollary~2 of \cite{Bir00b} transfers smallness from the $c_j$ to the $b_j$ at a high price: its bound contains the term $(\eps+1/k)^{1/\sqrt2-q}$ with exponent $1/\sqrt2-q\approx0.207$, which forces $\eps\approx10^{-4}$, and a term proportional to $f_{15}/(\gamma\eps)$.
+\end{enumerate}
+The final condition $f_{19}\le1/4$ then needs $f_{15}\approx7\cdot10^{-9}$, hence $g_9\approx1.5\cdot10^{-17}$, hence $\log(1/\delta)\approx2\cdot10^{16}$. So $q-1/2$ is doubly exponentially small. A sharper form of Corollary~2 would help most.
+
+\subsection*{Status}
+This note has not been refereed, and no professional mathematician has checked it yet. The work was done with substantial help from an AI model. Separate instances of the model re-derived the constants independently and found no error; Section~\ref{sec:status} describes what was checked and what was not.
+
+\subsection*{Organization}
+Section~\ref{sec:biro} recalls Bir\'o's notation and the structure of his proof. Section~\ref{sec:explicit} states the explicit form of his theorem (Theorem~\ref{thm:explicit}) with all formulas, and deduces Theorems~\ref{thm:main} and~\ref{thm:cons}. Section~\ref{sec:new} lists everything that is not in \cite{Bir00b}. Section~\ref{sec:numerics} describes the rigorous numerical verification, and Section~\ref{sec:status} the checks done so far. Appendix~\ref{app:proof} contains the complete proof of Theorem~\ref{thm:explicit}, line by line, in the order of \cite{Bir00b}.
+
+%======================================================================
+\section{Bir\'o's argument in brief}\label{sec:biro}
+
+Fix $q$ with $1/2<q<1/\sqrt2$, and suppose, to get a contradiction, that $z_1=1,z_2,\dots,z_n$ satisfy
+\begin{equation}\tag{1}
+  \abs{S_j}\le q\qquad(1\le j\le n).
+\end{equation}
+Bir\'o also fixes an auxiliary bound $q<q_0<1/\sqrt2$ (his (2)), which keeps his constants uniform as $q\to1/2$. Since we work at one fixed $q$, we take $q_0=q$.
+
+\subsection*{Notation}
+We use Bir\'o's notation, with short names for his sums. The numbers $b_j$ are defined by
+\[
+(z-z_2)\cdots(z-z_n)=z^{n-1}+b_1z^{n-2}+\dots+b_{n-1},\qquad b_0=1,
+\]
+and for $t\ge0$
+\[
+c_t=b_0+b_1+\dots+b_t,\quad B_t=1+\abs{b_1}+\dots+\abs{b_t},\quad C_t=1+\abs{c_1}+\dots+\abs{c_t},\quad D_t=1+c_1+\dots+c_t,
+\]
+so $c_0=B_0=C_0=D_0=1$, and $B_t$ is nondecreasing. The Newton--Girard formulas and $z_1=1$ give \cite{Bir94}
+\begin{align}
+  S_t+b_1S_{t-1}+\dots+b_{t-1}S_1&=c_{t-1}-tb_t\qquad(1\le t\le n-1),\tag{3}\\
+  S_n+b_1S_{n-1}+\dots+b_{n-1}S_1&=c_{n-1},\tag{4}
+\end{align}
+and summing (3) gives Bir\'o's new formulas
+\begin{equation}\tag{14}
+  S_t+c_1S_{t-1}+\dots+c_{t-1}S_1=2D_{t-1}-tc_t\qquad(1\le t\le n-1).
+\end{equation}
+For complex $w_1,w_2$ let $a(w_1,w_2)=\abs{\arg(w_2/w_1)}\in[0,\pi]$ if $w_1w_2\ne0$, and $a(w_1,w_2)=\pi$ otherwise (with $\arg\in(-\pi,\pi]$). Bir\'o's angles are
+\[
+\alpha_t=a(c_{t-1},b_t),\qquad \beta_t=a(D_{t-1},c_t).
+\]
+If $\alpha_t\le\pi/4$ for all $1\le t\le n-1$, then (4) and (1) give $q\ge1/\sqrt2$; so there is a least $k$ with $\alpha_k>\pi/4$, and $1\le k\le n-1$ (Appendix~\ref{app:setup}):
+\begin{equation}\tag{5, 6}
+  \alpha_t\le\pi/4\quad(1\le t\le k-1),\qquad \alpha_k>\pi/4 .
+\end{equation}
+
+\subsection*{The steps}
+\begin{enumerate}[label=(\alph*),leftmargin=*]
+\item \emph{Lemmas 2--5 and Corollaries 1--2.} For $t\le k$ all earlier angles are at most $\pi/4$, so $\abs{c_{t-1}}\ge B_{t-1}/\sqrt2$, while (3) and (1) give $\abs{c_{t-1}-tb_t}\le qB_{t-1}$. As $q$ is close to $1/2$, this forces near-equality: $\abs{c_{t-1}}\approx B_{t-1}/\sqrt2$ (Lemma~4) and $t\abs{b_t}\approx B_{t-1}/2$ outside a small set $H_\alpha$ of indices with $\alpha_t\le\alpha$ (Lemma~5). Moreover $B_{k-1}>M(q)=(\sqrt2-1)/(2(q-1/2))$, so $k$ is large (Corollary~1). Corollary~2 turns smallness of $\sum_{t\in H}\abs{c_t}$ into smallness of $\sum_{t\in H}\abs{b_t}$.
+\item \emph{Lemma 6.} $t\abs{c_t}/C_{t-1}=3/2+\rho_t$ with $\abs{\rho_t}\le f_5B_{k-1}/B_t$.
+\item \emph{Lemma 7.} By (14) and (1), $\abs{2D_{t-1}-tc_t}\le qC_{t-1}$. This forces $\beta_t\le\pi/8$ for $t\le k$.
+\item \emph{Lemma 8.} The ratio $h_t=\abs{D_{t-1}}/C_{t-1}$ satisfies $h_{t+1}\ge h_t+K_5(\cos\beta_t-h_t)/t$ when $\cos\beta_t\ge h_t$ (18), and, up to a small error, $\cos\beta_t\ge F(h_t)$ (19), where $F(h)=(2h^2+1)/(3h)$. Since $F(h)>h$ for $0<h<1$, the ratio $h_t$ is pushed towards the fixed point~$1$, and one gets $h_k\approx1$ and $\cos\beta_k\approx1$.
+\item \emph{Section 4 of \cite{Bir00b}.} By (14) at $t=k$ and (d), $\sum_j\abs{t_j}S_{k-j}\approx1/2$, where $t_j=c_j/D_{k-1}$ and $\sum_j\abs{t_j}\approx1$. Since $\re S\le q\approx1/2$, the indices $j$ with $\re S_{k-j}\le c:=1/2-\gamma$ carry little weight, and for the other indices $S_{k-j}\approx1/2$. Corollary~2 moves this to the weights $b_j$, and (3) at $t=k$ gives $kb_k\approx c_{k-1}/2$ (44). So $b_k$ points almost in the direction of $c_{k-1}$, against $\alpha_k>\pi/4$.
+\end{enumerate}
+
+\subsection*{Parameters}
+Besides $q$, the argument has the parameter $\alpha\in(0,\pi/4)$ of Lemma~5 (Bir\'o's own), and in our explicit form the following auxiliary ones: $\beta_0\in\{\pi/8,\tfrac12\arcsin q\}$ (the angle bound used from Lemma~7 on), $\theta\in(0,1)$ and $\mu\in(0,2/3)$ (Lemma~8; Bir\'o uses $\theta=1/3$, and $\mu$ plays the role of his $1/K_6$), $\eps\in(0,1)$ (Corollary~2) and $\gamma>0$ (the choice $c=1/2-\gamma$ in Section~4 of \cite{Bir00b}).
+
+%======================================================================
+\section{The explicit theorem}\label{sec:explicit}
+
+\begin{theorem}[explicit form of Bir\'o's theorem]\label{thm:explicit}
+Let $q,\alpha,\beta_0,\theta,\mu,\eps,\gamma$ be real numbers with
+\begin{enumerate}[label=\textup{(P\arabic*)},leftmargin=*]
+\item $1/2<q<1/\sqrt2$;
+\item $0<\alpha<\pi/4$;
+\item $\beta_0=\pi/8$ or $\beta_0=\tfrac12\arcsin q$;
+\item $0<\theta<1$, $0<\mu<2/3$, $0<\eps<1$, $\gamma>0$.
+\end{enumerate}
+Define the numbers in steps 1--14 below, and assume
+\begin{enumerate}[label=\textup{(\arabic*)},leftmargin=*]
+\item[\textup{(L8a)}] $m_5>1$;
+\item[\textup{(L8b)}] $(2+q)f_8^{\theta}<1$;
+\item[\textup{(FIN)}] $f_{19}\le1/4$.
+\end{enumerate}
+Then $\max_{1\le j\le n}\abs{S_j}>q$ for every $n\ge1$ and all complex numbers $z_1=1,z_2,\dots,z_n$. The same conclusion holds if \textup{(FIN)} is replaced by
+\begin{enumerate}[label=\textup{(\arabic*)},leftmargin=*]
+\item[\textup{(FIN-B)}] $f_{19}\le(2-\sqrt2)/4$,
+\end{enumerate}
+which implies \textup{(FIN)}; with \textup{(FIN-B)} the proof uses Bir\'o's final step \textup{(45)--(47)} instead of Proposition~\ref{prop:fin}.
+\end{theorem}
+
+With $\delta:=q-1/2$ and $\log$ the natural logarithm, the numbers are:
+\begin{enumerate}[label=\arabic*.,leftmargin=*,itemsep=2pt]
+\item $K_1=1/\sqrt2-q$, \quad $M=\dfrac{\sqrt2-1}{2\delta}$, \quad $\kappa=M^{-1/(1+q)}$.
+\item $f_1=\dfrac{\sqrt2\,\delta}{\cos\alpha-1/\sqrt2}$.
+\item $f_{2b}=\dfrac{q}{\sin\alpha}-\dfrac1{\sqrt2}$, \quad $f_{2a}=\sqrt{q^2-\tfrac12\sin^2\alpha}+\min\Bigl(1,\dfrac{q}{\sin\alpha}\Bigr)\Bigl(\cos\alpha-\dfrac1{\sqrt2}\Bigr)+\dfrac{f_{2b}}{\sqrt2}$.
+\item $f_3=f_{2a}+\dfrac{f_1}{2K_1}$.
+\item $f_5'=(2+q)(f_3+3\delta)$, \quad $f_5''=(2+q)\bigl(f_3+3\delta+(\sqrt2(1+q)+\tfrac12)\kappa\bigr)$.
+\item $f_7=q^2-\tfrac14$, \quad $f_8=\dfrac{f_7+f_5'}{6\cos\beta_0}$, \quad $f_8^{(k)}=\dfrac{f_7+f_5''}{6\cos\beta_0}$.
+\item $K_{11}=\dfrac{\sqrt2(1+q)(1-\cos\beta_0)}{2/3-\mu}$, \quad $m_5=\dfrac{M}{2+q}$, \quad $K_{12}=\dfrac1{2+q}$.
+\item $f_9=\max\Bigl\{\dfrac{f_8^{1-\theta}}{\mu},\ \dfrac{K_{11}}{\log m_5},\ \dfrac{K_{11}}{\log(K_{12}f_8^{-\theta})}\Bigr\}$, \quad $g_9=\min(f_9,\,1-\cos\beta_0)$.
+\item $f_{10}=g_9/3+f_8^{(k)}$.
+\item $f_{11}=\tfrac32g_9+\tfrac32\sqrt{2f_{10}}+f_5''$.
+\item $f_{12}=\dfrac{g_9}{1-g_9}$, \quad $f_{13}=\dfrac{\sqrt{2g_9}}{1-g_9}$.
+\item $f_{14}=\dfrac{f_{11}}{1-g_9}+qf_{13}$, \quad $f_{15}=\delta+qf_{12}+f_{14}$.
+\item $y=f_{15}/\gamma$, \quad $f_{17}=\min\Bigl\{1,\ (\eps+\kappa)^{K_1}+\sqrt2(1+q)\,\dfrac{y}{\eps}\Bigr\}$.
+\item $f_{18}=\sqrt{f_7+\gamma}$, \quad $f_{19}=f_{18}+(q+\tfrac12)f_{17}$.
+\end{enumerate}
+Under (P1), (P2), the quantities $K_1$, $\sin\alpha$, $\cos\alpha-1/\sqrt2$, $q^2-\frac12\sin^2\alpha$ and $f_{2b}$ are positive, and under (L8a), (L8b) both logarithms in $f_9$ are positive; so all numbers are well defined and $0<g_9<1$. The numbered symbols $f_i$, $K_i$, $m_i$ correspond to the constants and functions of \cite{Bir00b} with the same index (Table~\ref{tab:constants} in Appendix~\ref{app:proof}).
+
+\begin{proof}
+Appendix~\ref{app:proof}, which follows \cite{Bir00b} step by step; the theorem is assembled in Appendix~\ref{app:end}.
+\end{proof}
+
+\begin{remark}\label{rem:attained}
+Theorem~\ref{thm:explicit} gives $R_n\ge q$, and in fact $R_n>q$ because the minimum defining $R_n$ is attained \cite[\S1]{Bir00b}. (If $\abs{S_k}\le1$ for $k\le n$, Newton's identities give $\abs{e_k}\le1$ for the elementary symmetric functions of $z_1,\dots,z_n$, so all $\abs{z_j}\le2$; we minimize a continuous function over a compact set.)
+\end{remark}
+
+\begin{proof}[Proof of Theorems~\ref{thm:main} and~\ref{thm:cons}]
+At the two parameter points of Table~\ref{tab:params}, with $q=\frac12+2^{-N_0}$ and $q=\frac12+2^{-N_1}$, the conditions (P1)--(P4), (L8a), (L8b) and (FIN) hold, and at the second point also (FIN-B). This is verified rigorously in Section~\ref{sec:numerics}. Theorem~\ref{thm:explicit} then gives the first statement of both theorems (with $\beta_0=\pi/8$ and (FIN-B) for Theorem~\ref{thm:cons}), and Remark~\ref{rem:attained} gives $R_n>q$. Finally $N_0\log_{10}2=9\,686\,220\,142\,064\,131.31\ldots<10^{16}$ and $N_1\log_{10}2=95\,908\,156\,618\,544\,408\,915.5\ldots<10^{20}$ (checked in ball arithmetic), so $2^{-N_0}>10^{-10^{16}}$ and $2^{-N_1}>10^{-10^{20}}$.
+\end{proof}
+
+%======================================================================
+\section{What is not in Bir\'o's paper}\label{sec:new}
+
+Appendix~\ref{app:proof} follows \cite{Bir00b} step by step, except for the points below: one misprint (\S\ref{sec:misprint}), ten changes inside the argument (\S\ref{sec:changes}), and some bookkeeping that is not a new idea (\S\ref{sec:bookkeeping}). None of them changes the method. We write $(\star)$ for the inequality
+\begin{equation}\tag{$\star$}
+  \abs{c_{t-1}}\ge\Bigl(1-\frac1{\sqrt2}\Bigr)+\frac{B_{t-1}}{\sqrt2}\qquad(1\le t\le k),
+\end{equation}
+which follows from Lemma~2(ii) of \cite{Bir00b} and (5) (Appendix~\ref{app:lemma2}).
+
+\subsection{A misprint}\label{sec:misprint}
+In formula (18) of \cite{Bir00b} the left-hand side $h_{t-1}$ should read $h_{t+1}$: the display just before (18) bounds $h_{t+1}$, and (18) is used to go from $t$ to $t+1$. Nothing else depends on this. Both independent checks of Section~\ref{sec:status} found it as well.
+
+\subsection{The changes S1--S10}\label{sec:changes}
+
+\subsubsection*{S1. Lemma~7 with the angle $\beta^*=\frac12\arcsin q$}
+Bir\'o's Lemma~7 states $\beta_t\le\pi/8$ for $1\le t\le k$. We use the following form; part~(a) with $\beta=\pi/8$ is his statement, and his proof gives (a) without change.
+
+\begin{lemma}[Lemma~7 of \cite{Bir00b}, general form]\label{lem:beta}
+Assume \textup{(1)} with $1/2<q<1/\sqrt2$.
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item If $\beta\in(0,\pi/2)$ and $\sin2\beta>q$, then $\beta_t\le\beta$ for $1\le t\le k$.
+\item $\beta_t\le\beta^*:=\frac12\arcsin q$ for $1\le t\le k$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Suppose not, and let $t$ be the least index in $[1,k]$ with $\beta_t>\beta$. Then $\beta_j\le\beta$ for $1\le j\le t-1$.
+
+\emph{(15) $\abs{D_{t-1}}\ge C_{t-1}\cos\beta$.} For $1\le j\le t-1$, Lemma~1$'$(iv$'$) (Appendix~\ref{app:conv}) with $w_1=D_{j-1}$, $w_2=c_j$ gives $\abs{D_j}\ge\abs{D_{j-1}}+\abs{c_j}\cos\beta_j\ge\abs{D_{j-1}}+\abs{c_j}\cos\beta$. With $\abs{D_0}=1$ this gives $\abs{D_{t-1}}\ge1+(C_{t-1}-1)\cos\beta\ge C_{t-1}\cos\beta$. In particular $D_{t-1}\ne0$.
+
+\emph{(16) $\abs{2D_{t-1}-tc_t}\ge2\abs{D_{t-1}}\sin\beta$.} If $\beta_t\le\pi/2$, Lemma~1$'$(iii$'$) with $w_1=2D_{t-1}$, $w_2=tc_t$ (so that $a(w_1,w_2)=\beta_t$) gives $\abs{2D_{t-1}-tc_t}\ge2\abs{D_{t-1}}\sin\beta_t$, and $\sin\beta_t>\sin\beta$ because $\beta<\beta_t\le\pi/2$. If $\beta_t>\pi/2$ and $c_t=0$, the left side equals $2\abs{D_{t-1}}$. If $\beta_t>\pi/2$ and $c_t\ne0$, then $a(2D_{t-1},-tc_t)=\pi-\beta_t<\pi/2$, and Lemma~1$'$(iv$'$) gives $\abs{2D_{t-1}-tc_t}\ge2\abs{D_{t-1}}+t\abs{c_t}\cos(\pi-\beta_t)\ge2\abs{D_{t-1}}$.
+
+Combining (15) and (16), $\abs{2D_{t-1}-tc_t}\ge2\sin\beta\cos\beta\,C_{t-1}=\sin(2\beta)\,C_{t-1}$. By (14) and (1) (valid since $t\le k\le n-1$), the left side is at most $qC_{t-1}$, and $C_{t-1}\ge1$. So $\sin2\beta\le q$, a contradiction.
+
+(b) Let $\beta\in(\beta^*,\pi/4]$. Then $2\beta\in(\arcsin q,\pi/2]$, and since $\sin$ is strictly increasing on $[0,\pi/2]$, $\sin2\beta>\sin(\arcsin q)=q$. By (a), $\beta_t\le\beta$. So $\beta_t\le\beta$ for every $\beta\in(\beta^*,\pi/4]$, hence $\beta_t\le\inf\,(\beta^*,\pi/4]=\beta^*$.
+\end{proof}
+
+One cannot simply put $\beta=\beta^*$ into (a): then $\sin2\beta=q$ and the argument ends with $q\le q$; this is why (b) goes through the limit. Since $1/2<q<1/\sqrt2$ we have $\pi/12<\beta^*<\pi/8$, so every later use of Lemma~7 in \cite{Bir00b} (through $\cos\beta_t\ge\cos\beta_0$ and $\cos^2\beta_0>1/2$) remains valid with $\beta_0=\beta^*$. The gain is in $K_{11}$, which is proportional to $1-\cos\beta_0$: $1-\cos\beta^*\approx0.034$ against $1-\cos(\pi/8)\approx0.076$ (floats).
+
+\subsubsection*{S2. Formula (19) with an error linear in $X_t$ and coefficient~$1$}
+Let $h_t=\abs{D_{t-1}}/C_{t-1}$, $X_t=B_{k-1}/B_t$, $F(h)=(2h^2+1)/(3h)$ and $\rho_t=t\abs{c_t}/C_{t-1}-3/2$. By (17) (Appendix~\ref{app:17}), $\cos\beta_0\le h_t\le1$ for $1\le t\le k$, and by Lemma~6 (Appendix~\ref{app:lemma6}) $\abs{\rho_t}\le f_5'X_t$ for $t\le k-1$ and $\abs{\rho_k}\le f_5''X_k$. Bir\'o's (19) reads $\cos\beta_t\ge F(h_t)+O(f_8X_t^2)$.
+
+\begin{proposition}[(19) of \cite{Bir00b}, sharper form]\label{prop:19}
+For $1\le t\le k$,
+\begin{equation}\tag{19$'$}
+  \cos\beta_t\ \ge\ F(h_t)-\frac{f_7+\abs{\rho_t}}{6h_t}\ \ge\ F(h_t)-\frac{f_7+\abs{\rho_t}}{6\cos\beta_0},\qquad f_7=q^2-\tfrac14 .
+\end{equation}
+Consequently $\cos\beta_t\ge F(h_t)-f_8X_t$ for $1\le t\le k-1$, and $\cos\beta_k\ge F(h_k)-f_8^{(k)}$.
+\end{proposition}
+
+\begin{proof}
+Fix $t$ and write $h=h_t$, $x=\cos\beta_t$, $\rho=\rho_t$. By Lemma~\ref{lem:beta}, $\beta_t\le\beta_0<\pi$, so $D_{t-1}\ne0$, $c_t\ne0$, and $x\ge\cos\beta_0>1/\sqrt2$. Put $w_1=2D_{t-1}/C_{t-1}$ and $w_2=tc_t/C_{t-1}$. Then $\abs{w_1}=2h$, $\abs{w_2}=3/2+\rho$, and $\varphi=\arg(w_1/w_2)=\arg(D_{t-1}/c_t)$ satisfies $\abs\varphi=\beta_t$, so $\cos\varphi=x$. By (14) and (1), $\abs{w_1-w_2}\le q$. Lemma~1(ii) of \cite{Bir00b} gives
+\[
+4h^2+(3/2+\rho)^2-4h(3/2+\rho)x=\abs{w_1-w_2}^2\le q^2,
+\]
+which is equivalent to
+\[
+6hx\ge4h^2+2-f_7+T,\qquad T:=3\rho+\rho^2-4h\rho x .
+\]
+We claim $T\ge-\abs\rho$. If $\rho\ge0$, then $T+\rho=\rho^2+4\rho(1-hx)\ge0$, since $0<h\le1$ and $x\le1$. If $\rho<0$, put $r=-\rho$; then $T+r=r^2+r(4hx-2)\ge0$, since $h\ge\cos\beta_0$ and $x\ge\cos\beta_0$ give $4hx\ge4\cos^2\beta_0>2$. Hence $6hx\ge4h^2+2-f_7-\abs\rho$, and dividing by $6h>0$ gives the first inequality of (19$'$). The second follows from $h\ge\cos\beta_0$ and $f_7+\abs\rho\ge0$. For $t\le k-1$ we have $X_t\ge1$, so $f_7+\abs{\rho_t}\le(f_7+f_5')X_t$; for $t=k$ we have $X_k\le1$, so $\abs{\rho_k}\le f_5''$.
+\end{proof}
+
+Compared with \cite{Bir00b}, the error is linear in $X_t$ (the term $\rho^2$ has the good sign and is dropped), and $\abs{\rho_t}$ has coefficient $1$ (the cross term $-4h\rho x$ is controlled by Lemma~7 and (17); a crude bound would give $7$). Bir\'o's $f_6$ becomes simply $f_5$. The linearity is what allows S6.
+
+\subsubsection*{S3. Formula (20) with $2(1-H)/3$}
+For $0<H\le1$,
+\begin{equation}\tag{20$'$}
+  F(H)-H=\frac{1-H^2}{3H}\ \ge\ \frac{2(1-H)}3,
+\end{equation}
+because with $H=1-\varphi$ one has $F(H)-H-2\varphi/3=\varphi^2/(3(1-\varphi))\ge0$. Bir\'o's (20) uses $(1-H)/3$. As a result, the gap in his (26) becomes $\cos\beta_t-h_t\ge K_7\varphi$ with $K_7=2/3-\mu$ (Appendix~\ref{app:20}), and $K_{11}$ is roughly halved.
+
+\subsubsection*{S4. Formula (27) with $h_{t_0}\ge\cos\beta_0$}
+In (27) Bir\'o bounds the total increase $h_k-h_{t_0}$ using $h_{t_0}\ge0$. By (17), $h_{t_0}\ge\cos\beta_0$, so the increase is at most $1-\cos\beta_0$ instead of~$1$. This gives $K_9=\sqrt2(1-\cos\beta_0)/K_7$ (Appendix~\ref{app:27}).
+
+\subsubsection*{S5. Formula (18) with the factor $1/(\sqrt2(t+1))$}
+For $1\le t\le k-1$,
+\begin{equation}\tag{18b}
+  \frac{\abs{c_t}}{C_t}\ \ge\ \frac1{\sqrt2\,(t+1)},
+\end{equation}
+since $(\star)$ at index $t+1\le k$ gives $\abs{c_t}\ge B_t/\sqrt2$, and $C_t\le(t+1)B_t$. Hence (18) holds in the form $h_{t+1}\ge h_t+(\cos\beta_t-h_t)/(\sqrt2(t+1))$ whenever $\cos\beta_t\ge h_t$. Bir\'o's form with $K_5/t$ holds with $K_5=1/(2\sqrt2)$; ours is about twice as strong for large $t$ (Appendix~\ref{app:18}).
+
+\subsubsection*{S6. A free exponent $\theta$ in the choice of $t_0$}
+Bir\'o chooses $t_0$ in (29)--(32) with the threshold $f_8^{-1/3}$. We use $f_8^{-\theta}$ with any $\theta\in(0,1)$. With the quadratic error of Bir\'o's (19) one needs $\theta<1/2$; with (19$'$) every $\theta<1$ works. Since $f_9\approx K_{11}/(\theta\log(1/f_8))$ (float), $\theta$ close to $1$ gains a factor of about $3$ over $\theta=1/3$ (Appendix~\ref{app:t0}).
+
+\subsubsection*{S7. A free $\gamma$ in the choice of $c$}
+In Section~4 of \cite{Bir00b}, Bir\'o takes $c=1/2-f_{16}$ with $f_{16}=\sqrt{f_{15}}$. We take $c=1/2-\gamma$ with a free $\gamma>0$ and $y=f_{15}/\gamma$. This balances the two parts of the final bound: $f_{17}$ wants $\gamma$ large, $f_{18}=\sqrt{f_7+\gamma}$ wants $\gamma$ small (Appendix~\ref{app:Hc}).
+
+\subsubsection*{S8. The final step with threshold $1/4$}
+Bir\'o's final step (45)--(47) uses (6) only through $\sin\alpha_k>1/\sqrt2$ (his Lemma~2(iii)), and gives a contradiction if $f_{19}\le(2-\sqrt2)/4\approx0.146$. The following uses the angle condition (6) directly.
+
+\begin{proposition}\label{prop:fin}
+If $f_{19}\le1/4$, then \textup{(44$'$)} of Appendix~\ref{app:final}, that is $\abs{c_{k-1}/2-kb_k}\le f_{19}B_{k-1}$, together with $(\star)$ contradicts~\textup{(6)}.
+\end{proposition}
+
+\begin{proof}
+We have $c_{k-1}\ne0$ by $(\star)$ and $b_k\ne0$ (Appendix~\ref{app:lemma2}). Put $e=(kb_k-c_{k-1}/2)/c_{k-1}$, so that $kb_k/c_{k-1}=1/2+e$. By (44$'$), by $(\star)$ in the strict form $\abs{c_{k-1}}>B_{k-1}/\sqrt2$, and since $f_{19}B_{k-1}>0$,
+\[
+\abs e\le\frac{f_{19}B_{k-1}}{\abs{c_{k-1}}}<\sqrt2\,f_{19}\le\frac{\sqrt2}4=\frac1{2\sqrt2}.
+\]
+Let $w=1/2+e$. Then $\re w\ge1/2-\abs e>0$. Since $(a+b)^2\le2(a^2+b^2)$ for real $a,b$, we have $\abs{\im e}-\re e\le\sqrt2\abs e$, hence
+\[
+\abs{\im w}-\re w=\abs{\im e}-\re e-\tfrac12\le\sqrt2\abs e-\tfrac12<0 .
+\]
+So $w\ne0$ and $\abs{\arg w}<\pi/4$. As $k>0$, $\alpha_k=\abs{\arg(b_k/c_{k-1})}=\abs{\arg w}<\pi/4$, contradicting (6).
+\end{proof}
+
+The threshold $1/4$ is the best that (44$'$), $(\star)$ and (6) alone can give: the largest disc around $1/2$ inside the sector $\abs{\arg w}<\pi/4$ has radius $1/(2\sqrt2)$. In floats, this change reduces the exponent from about $1.39\cdot10^{20}$ (with S1 and Bir\'o's final step) to $N_0\approx3.22\cdot10^{16}$.
+
+\subsubsection*{S9. Formula (12) from Lemma~4}
+For $1\le t\le k$,
+\begin{equation}\tag{12$'$}
+  0\le C_{t-1}-\frac1{\sqrt2}\sum_{j=1}^tB_{j-1}\le\sqrt2\,(q-\tfrac12)\,t\,B_{k-1},
+\end{equation}
+by adding Lemma~4 of \cite{Bir00b} in the explicit form $0\le\abs{c_{j-1}}-B_{j-1}/\sqrt2\le\sqrt2(q-\frac12)B_{k-1}$ over $j=1,\dots,t$. Bir\'o obtains (12) from Lemma~5, treating $j\in H_\alpha$ and $j\notin H_\alpha$ separately. Our route is shorter and also covers $t=k$ (Appendix~\ref{app:lemma6}).
+
+\subsubsection*{S10. The function $m_2$ via Bernoulli's inequality}
+Bir\'o's $m_2(k)=\prod_{l=1}^{k-1}(1+K_2/l)$ bounds $B_{k-1}$ from above. We use $B_{k-1}\le k^{1+q}$: by Lemma~3(i), $B_t/B_{t-1}\le1+(1+q)/t\le(1+1/t)^{1+q}$ (Bernoulli's inequality, exponent $\ge1$), and the product over $t=1,\dots,k-1$ telescopes. With Corollary~1 this gives $k>M^{1/(1+q)}$, i.e.\ $1/k<\kappa$ (Appendix~\ref{app:lemma3}, \ref{app:cor1}).
+
+\subsection{Bookkeeping that is not a new idea}\label{sec:bookkeeping}
+\begin{enumerate}[label=(B\arabic*),leftmargin=*]
+\item $q_0=q$ (Section~\ref{sec:biro}).
+\item Degenerate angles: Lemma~1$'$ states Bir\'o's Lemma~1(iii), (iv) with the convention that $a(w_1,w_2)=\pi$ when $w_1w_2=0$ (Appendix~\ref{app:conv}).
+\item Lemma~3: we keep the constants of parts (i) and (ii) separate: $\Ka=1/\sqrt2-q$ and $\Kb=1+q$ for (i), and $\Kc$, $\Kd$ for (ii). Bir\'o uses one pair for both (``perhaps changing the constants''). In particular $K_{10}$, $K_{12}$, $m_2$ and $m_5$ use only the constant $\Kb=1+q$ of part~(i).
+\item Corollary~2 is stated with a free $\eps\in(0,1)$, and $1/k<\kappa$ is taken from Corollary~1; Bir\'o instead argues that $k$ may be assumed arbitrarily large. Our form needs no smallness assumption on~$y$.
+\item Steps that \cite{Bir00b} states in one sentence are written out: Lemma~6 at $t=k$ (the extra term $(\sqrt2(1+q)+\frac12)\kappa$ in $f_5''$), (19) at $t=k$, the trivial branches of Lemma~8 (the constants $K_{13}$--$K_{15}$ are replaced by the three-term maximum $f_9$ and by $g_9=\min(f_9,1-\cos\beta_0)$), and the steps (38)--(47) with every constant.
+\end{enumerate}
+
+\subsection{Which changes each theorem uses}
+Table~\ref{tab:uses} lists, for each proof, which of S1--S10 it uses. The independent derivation is described in Section~\ref{sec:status}; it uses Bir\'o's route for (12) and the bound $B_{k-1}\le k(k+1)/2$ instead of S10.
+
+\begin{table}[ht]
+\centering
+\caption{Changes used by each proof ($+$ used, -- not used).}\label{tab:uses}
+\begin{tabular}{lccc}
+\toprule
+& Theorem~\ref{thm:main} & Theorem~\ref{thm:cons}, & Theorem~\ref{thm:cons},\\
+& & our proof$^{*}$ & independent derivation\\
+\midrule
+S1 \ $\beta^*=\frac12\arcsin q$ & $+$ & -- & -- \\
+S2 \ (19$'$) & $+$ & $+$ & $+$ \\
+S3 \ (20$'$) & $+$ & $+$ & $+$ \\
+S4 \ $h_{t_0}\ge\cos\beta_0$ & $+$ & $+$ & $+$ \\
+S5 \ (18b) & $+$ & $+$ & $+$ \\
+S6 \ free $\theta$ & $+$ & $+$ & $+$ \\
+S7 \ free $\gamma$ & $+$ & $+$ & $+$ \\
+S8 \ threshold $1/4$ & $+$ & -- & -- \\
+S9 \ (12$'$) & $+$ & $+$ & -- \\
+S10 \ $B_{k-1}\le k^{1+q}$ & $+$ & $+$ & -- \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+{\footnotesize $^{*}$Theorem~\ref{thm:explicit} with $\beta_0=\pi/8$ and (FIN-B).}
+\end{table}
+
+%======================================================================
+\section{How the numbers were certified}\label{sec:numerics}
+
+\subsection*{Parameters}
+Table~\ref{tab:params} gives the two parameter points. All inputs are exact: $q=\frac12+\delta$ is a rational number, and $\alpha$ enters only through $x=\pi/4-\alpha$, which is given exactly. At the first point $x=2^{-\lfloor 2N_0/3\rfloor}$.
+
+\begin{table}[ht]
+\centering
+\caption{The two parameter points.}\label{tab:params}
+\begin{tabular}{lll}
+\toprule
+& Theorem~\ref{thm:main} & Theorem~\ref{thm:cons}\\
+\midrule
+$\delta=q-\frac12$ & $2^{-32176926823186696}$ & $2^{-318600000000000000400}$\\
+$x=\frac\pi4-\alpha$ & $2^{-21451284548791130}$ & $2^{-212400000000000000200}$\\
+$\beta_0$ & $\frac12\arcsin q$ & $\pi/8$\\
+$\theta$ & $1-2^{-40}$ & $1-102/106200000000000000101$\\
+$\mu$ & $2^{-30}$ & $1/100000$\\
+$\eps$ & $12/100000$ & $1/110000$\\
+$\gamma$ & $408/100000$ & $1/714$\\
+final test & (FIN): $f_{19}\le1/4$ & (FIN-B): $f_{19}\le(2-\sqrt2)/4$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Arithmetic}
+The checker \texttt{check\_eta.py} computes steps 1--14 of Section~\ref{sec:explicit} in Arb ball arithmetic \cite{Joh17}, through python-flint 0.9.0 \cite{FLINT}. Every quantity is a ball (midpoint and radius) that is guaranteed to contain the exact value, and the elementary functions ($\log$, $\exp$, $\sqrt{\ }$, $\sin$, $\cos$, $\arcsin$, $\min$, $\max$) are evaluated with rigorous enclosures. A condition counts as satisfied only if it holds for every point of the ball; an undecided comparison counts as a failure. Condition (P4) is decided in exact rational arithmetic. Exponents such as $2^{-3\cdot10^{20}}$ are handled natively by Arb.
+
+Since $\delta$ and $x$ are extremely small, the formulas are evaluated in a form that never subtracts nearly equal numbers. With $x=\pi/4-\alpha$:
+\begin{gather*}
+\sin\alpha=\frac{\cos x-\sin x}{\sqrt2},\qquad
+\cos\alpha-\frac1{\sqrt2}=\frac{\sin x-2\sin^2(x/2)}{\sqrt2},\\
+q^2-\tfrac12\sin^2\alpha=\delta+\delta^2+\tfrac14\sin2x,\qquad
+f_{2b}=\frac{\delta+\sin^2(x/2)+\frac12\sin x}{\sin\alpha},\\
+f_7=\delta(1+\delta),\qquad M=\frac{\sqrt2-1}{2\delta},\qquad
+1-\cos\beta_0=2\sin^2(\beta_0/2).
+\end{gather*}
+These identities were verified symbolically; $\delta$ and $x$ themselves are inputs and are never recovered by subtraction.
+
+\subsection*{Results}
+\begin{itemize}[leftmargin=*]
+\item At the point of Theorem~\ref{thm:main} the checker prints PASS at working precisions $64$, $128$, $256$, $512$ and $2000$ bits. At $256$ bits, $f_{19}=0.24999999999999999903$ (rounded midpoint; the radius of the ball is below $10^{-30}$), so the margin $1/4-f_{19}\approx9.7\cdot10^{-19}$ is far larger than the radius. The same output was obtained on a second computer (Windows, python-flint 0.9.0).
+\item With $N_0-1$ in place of $N_0$ (and the same rule $x=2^{-\lfloor2N/3\rfloor}$, which gives the same $x$) the checker prints FAIL: $f_{19}=0.2500000000000000002577\ldots>1/4$. So, for these values of $\theta,\mu,\eps,\gamma$ and this rule for $x$, the exponent $N_0$ is sharp. Other choices of these parameters could lower it only in about the sixth significant digit (float search).
+\item At the point of Theorem~\ref{thm:cons} the checker prints PASS, and (FIN-B) holds. Here $f_{19}=0.1462296737845\ldots$ and $(2-\sqrt2)/4=0.1464466094067\ldots$, so the margin is about $2.2\cdot10^{-4}$.
+\item An independent floating-point prototype (mpmath, $60$ digits; not a proof) agrees with all $21$ compared values at the first point to relative accuracy $2.3\cdot10^{-46}$.
+\item The second checker of Section~\ref{sec:status}, written independently from \cite{Bir00b} and \cite{Bir94}, prints PASS at its own best point, which has the same $\delta$ and $x$ as the point of Theorem~\ref{thm:cons} (run by the author with python-flint 0.9.0, and reproduced separately). There its final value is $f_{19}=0.1462564428\ldots$, also below $(2-\sqrt2)/4$.
+\end{itemize}
+
+\begin{table}[ht]
+\centering
+\caption{Main values at the two points (ball midpoints, rounded).}\label{tab:values}
+\begin{tabular}{lll}
+\toprule
+& Theorem~\ref{thm:main} & Theorem~\ref{thm:cons}\\
+\midrule
+$f_8$ & $6.200\cdot10^{-3228740047354711}$ & $5.030\cdot10^{-31969385539514802963}$\\
+$K_{11}$ & $0.10842$ & $0.24222$\\
+$\log(K_{12}f_8^{-\theta})$ & $7.434\cdot10^{15}$ & $7.361\cdot10^{19}$\\
+$f_9=g_9$ (third term) & $1.4584\cdot10^{-17}$ & $3.2905\cdot10^{-21}$\\
+$f_{15}$ & $7.3775\cdot10^{-9}$ & $1.1082\cdot10^{-10}$\\
+$(\eps+\kappa)^{K_1}$ & $0.15416$ & $0.09034$\\
+$\sqrt2(1+q)y/\eps$ & $0.03197$ & $0.01846$\\
+$f_{17}$ & $0.18613$ & $0.10881$\\
+$f_{18}$ & $0.06387$ & $0.03742$\\
+$f_{19}$ & $0.24999999999999999903$ & $0.14622967378$\\
+threshold & $1/4$ & $(2-\sqrt2)/4=0.14644660941$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{How the parameters were chosen}
+The parameters were found by a floating-point search; this is a guide only, and the verdict above does not depend on it. Write $L=\log(1/\delta)$ and $\Lambda=\log(1/x)$. Since $f_3\approx\sqrt{x/2}+\delta/(K_1x)$, the best ratio is $\Lambda\approx\frac23L$, which gives $\log(1/f_8)\approx L/3$. In $f_9$ the third term dominates, $f_9\approx3K_{11}/(\theta L)$; the first term is made negligible by $1-\theta=2^{-40}$ and $\mu=2^{-30}$ (it is about $10^{-2928}$). Then $f_{15}\approx1.932\sqrt{g_9}$, and $\eps,\gamma$ minimize $f_{19}\approx\sqrt\gamma+\eps^{K_1}+T$ with $T=\sqrt2(1+q)f_{15}/(\gamma\eps)$. At the optimum $\sqrt\gamma=2T$ and $\eps^{K_1}=T/K_1$, and the certified point agrees with this. The first term $\eps^{K_1}\approx0.154$ of $f_{17}$ is the largest single piece of the final budget $1/4$.
+
+%======================================================================
+\section{Status and independent checks}\label{sec:status}
+
+\begin{itemize}[leftmargin=*]
+\item \emph{Unrefereed.} This note has not been refereed, and no professional mathematician has checked it. Until an expert has read it, it should not be regarded as established.
+\item \emph{How it was made.} The derivation of all constants, all proofs and all code were produced with an AI model (Claude Opus 5.5), under the direction of the author.
+\item \emph{First independent check.} A separate instance of the model, given only \cite{Bir00b}, \cite{Bir94} and a description of the task, without access to our derivations, our checker or our parameter values, made every constant of \cite{Bir00b} explicit and wrote its own checker. After renaming of parameters, its list of conditions corresponds one-to-one to ours. Every constant is either the same as ours or a different bound with its own valid proof; all of these proofs were re-read line by line (again by the model), and no error was found on either side. Its checker passes at its own points and fails where it should. At its best point our checker, run with $\beta_0=\pi/8$ and (FIN-B), also passes, and the main intermediate values of the two chains agree to within $0.3\%$. It found the misprint of \S\ref{sec:misprint} independently. Its derivation also uses S2--S7: it listed S2, S3 and S6 as its own sharpenings, and used S4, S5 and S7 without listing them. It did not use S1, S8, S9 or S10 (Table~\ref{tab:uses}).
+\item \emph{Second independent check.} A further fresh instance, given only \cite{Bir00b} and the two claims, first proved Lemma~\ref{lem:beta}(b) and Proposition~\ref{prop:fin} on its own and then read our proofs. It found no error. At its suggestion the limit step in the proof of Lemma~\ref{lem:beta}(b) is written out.
+\item \emph{Not derived independently.} Four of our steps were only re-read by the model, not re-derived independently: S9, S10, the splitting used for $f_{11}$ in (38$'$), and the case (29$'$) in the choice of $t_0$ (the first check avoided this case by its choice of threshold). In each of these places the first check proved a bound of the same kind by another route.
+\item \emph{Test on real systems.} Theorem~\ref{thm:explicit} cannot be tested directly, but every intermediate inequality of Appendix~\ref{app:proof} holds for every system with $\max_j\abs{S_j}\le q$ and any $q\in(1/2,1/\sqrt2)$. Near-optimal systems with $\max_j\abs{S_j}$ between $0.688$ and $0.707$ exist for $n\ge40$ \cite{CG96,Cert}. On eleven such systems ($40\le n\le1000$, with $10\le k\le243$) we evaluated both sides of 50 of these inequalities and identities with our explicit constants (mpmath, $200$ digits), including those of S1, S2, S5, S9, S10 and S8 (in the contrapositive form $\abs{c_{k-1}/2-kb_k}>B_{k-1}/4$). None was violated. This test cannot see errors that appear only when $q$ is very close to $1/2$, for example in the main branch of Lemma~8.
+\item \emph{Computer algebra.} The purely algebraic identities used in Appendix~\ref{app:proof} were verified exactly with sympy. The inequalities were checked only by reading.
+\item \emph{Limits of these checks.} All derivations were made by instances of one AI model, so they may share a blind spot. The ball arithmetic verifies the inequalities of Theorem~\ref{thm:explicit} at the stated parameters; it does not verify Theorem~\ref{thm:explicit} itself. Corrections are very welcome.
+\end{itemize}
+
+\subsection*{Use of AI}
+This work was carried out with substantial help from an AI model, Claude Opus 5.5 (Anthropic). It was used to read \cite{Bir00b} and \cite{Bir94}, to derive and write the explicit constants and their proofs, to write all of the code, and to draft this text. The author planned and directed the work and ran the checkers on his own computer. The independent checks described above were done by separate instances of the same model.
+
+\subsection*{Data and code}
+The checker \texttt{check\_eta.py} with its complete outputs at the points of Theorems~\ref{thm:main} and~\ref{thm:cons}, the independently written second checker with the notes of its author, the floating-point cross-checks and the computer-algebra scripts are in the repository \cite{Rep}.
+
+\subsection*{Acknowledgements}
+I thank Andr\'as Bir\'o for asking which explicit constant the proof of \cite{Bir00b} gives, and Gergely Harcos, who had asked himself the same question.
+
+\begin{thebibliography}{Bir00b}
+
+\bibitem[Atk61]{Atk61}
+F.~V. Atkinson, \emph{On sums of powers of complex numbers}, Acta Math. Acad. Sci. Hungar. \textbf{12} (1961), 185--188.
+
+\bibitem[Atk69]{Atk69}
+F.~V. Atkinson, \emph{Some further estimates concerning sums of powers of complex numbers}, Acta Math. Acad. Sci. Hungar. \textbf{20} (1969), 193--210.
+
+\bibitem[Bir94]{Bir94}
+A.~Bir\'o, \emph{On a problem of Tur\'an concerning sums of powers of complex numbers}, Acta Math. Hungar. \textbf{65} (1994), 209--216.
+
+\bibitem[Bir00]{Bir00}
+A.~Bir\'o, \emph{An upper estimate in Tur\'an's pure power sum problem}, Indag. Math. (N.S.) \textbf{11} (2000), 499--508.
+
+\bibitem[Bir00b]{Bir00b}
+A.~Bir\'o, \emph{An improved estimate in a power sum problem of Tur\'an}, Indag. Math. (N.S.) \textbf{11} (2000), 343--358.
+
+\bibitem[Blo]{Blo}
+T.~Bloom, \emph{Erd\H{o}s problem \#519}, \url{https://www.erdosproblems.com/519}; forum page \url{https://www.erdosproblems.com/forum/thread/519}.
+
+\bibitem[Cert]{Cert}
+V.~Bakeas, \emph{Certified upper bounds in Tur\'an's pure power sum problem (Erd\H{o}s \#519): certificates and checkers}, version 1.0.0 (2026), \url{https://github.com/Bakeas/turan-power-sum-certificates}, doi:10.5281/zenodo.23806909.
+
+\bibitem[CG96]{CG96}
+A.~Y. Cheer and D.~A. Goldston, \emph{Tur\'an's pure power sum problem}, Math. Comp. \textbf{65} (1996), 1349--1358.
+
+\bibitem[FLINT]{FLINT}
+The FLINT team, \emph{FLINT: Fast Library for Number Theory}, \url{https://flintlib.org}, and \emph{python-flint}, version 0.9.0, \url{https://github.com/flintlib/python-flint}.
+
+\bibitem[Joh17]{Joh17}
+F.~Johansson, \emph{Arb: efficient arbitrary-precision midpoint-radius interval arithmetic}, IEEE Trans. Comput. \textbf{66} (2017), 1281--1292.
+
+\bibitem[Rep]{Rep}
+V.~Bakeas, \emph{An explicit lower bound in Tur\'an's pure power sum problem: note and checkers}, version 1.0.0 (2026), \url{https://github.com/Bakeas/turan-explicit-lower-bound}.
+
+\bibitem[Tao]{Tao}
+T.~Tao et al., \emph{Optimization constants repository}, constant $C_{42}$, \url{https://teorth.github.io/optimizationproblems/constants/42a.html}.
+
+\bibitem[Tur84]{Tur84}
+P.~Tur\'an, \emph{On a New Method of Analysis and its Applications}, Wiley, New York, 1984.
+
+\end{thebibliography}
+
+\appendix
+%======================================================================
+\section{The proof of Theorem~\ref{thm:explicit}, step by step}\label{app:proof}
+
+This appendix proves Theorem~\ref{thm:explicit}. It follows \cite{Bir00b} in order and keeps Bir\'o's numbering of lemmas and formulas; our variants carry a prime, as in (19$'$). For every implicit constant of \cite{Bir00b} it gives an explicit admissible value with a proof; Table~\ref{tab:constants} is a summary. The purely algebraic identities below were verified exactly with sympy; the inequalities are proved in the text.
+
+Throughout, $1/2<q<1/\sqrt2$, the system $z_1=1,z_2,\dots,z_n$ satisfies (1), and $0<\alpha<\pi/4$, so that $\cos\alpha>1/\sqrt2>\sin\alpha>0$. We write
+\[
+\delta:=q-\tfrac12,\qquad \lambda:=\sqrt2\,\delta,
+\]
+and use the notation of Section~\ref{sec:biro}. Bir\'o's auxiliary bound $q_0$ is taken equal to~$q$.
+
+\begin{table}[ht]
+\centering\small
+\caption{Bir\'o's constants and our explicit values.}\label{tab:constants}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{3.2cm}p{9.3cm}l}
+\toprule
+\cite{Bir00b} & explicit value & where\\
+\midrule
+$K_1,K_2$, Lemma 3(i) & $\Ka=1/\sqrt2-q$, \ $\Kb=1+q$ & \ref{app:lemma3}\\
+$K_1,K_2$, Lemma 3(ii) & $\Kc=1/(\sqrt2(1+q))$, \ $\Kd=1+1/(1/\sqrt2-q)$ & \ref{app:lemma3}\\
+$m_1(k)$, $m_2(k)$ & $k^{\Ka}$, \ $k^{1+q}$ & \ref{app:lemma3}\\
+$m_3(q)$ & $B_{k-1}>M=(\sqrt2-1)/(2\delta)$ and $k>M^{1/(1+q)}$ & \ref{app:cor1}\\
+$m_4(y)$ & $\min\{1,(\eps+\kappa)^{\Ka}+\sqrt2(1+q)y/\eps\}$, \ $\kappa=M^{-1/(1+q)}$ & \ref{app:cor2}\\
+$O(\cdot)$ in Lemma 4 & $\lambda B_{k-1}=\sqrt2\,\delta B_{k-1}$ & \ref{app:lemma4}\\
+$f_1$ & $\sqrt2\,\delta/(\cos\alpha-1/\sqrt2)$ & \ref{app:lemma5}\\
+$f_2$ & $\max(f_{2a},f_{2b})$, see step 3 of Section~\ref{sec:explicit} & \ref{app:lemma5}\\
+$f_3$ in (11), (12) & $f_3=f_{2a}+f_1/(2\Ka)$; (12) holds with $t\lambda B_{k-1}$ & \ref{app:lemma6}\\
+$f_4$, $K_4$ & $f_3+3\delta$, \ $1/(\sqrt2(2+q))$ & \ref{app:lemma6}\\
+$f_5$ & $f_5'$ for $t\le k-1$; $f_5''$ for all $t\le k$ & \ref{app:lemma6}\\
+Lemma 7 & $\beta_t\le\pi/8$, or $\beta_t\le\beta^*=\frac12\arcsin q$ & Lemma~\ref{lem:beta}\\
+$K_5$ in (18) & $1/(2\sqrt2)$; in fact $1/(\sqrt2(t+1))$ in place of $K_5/t$ & \ref{app:18}\\
+$f_6$, $f_7$, $f_8$ in (19) & $f_6=f_5$; \ $f_7=q^2-\frac14$; \ $f_8$, $f_8^{(k)}$ as in step 6 & Prop.~\ref{prop:19}\\
+$K_6$, $K_7$ & $1/\mu$, \ $2/3-\mu$ & \ref{app:20}\\
+$K_8,K_9,K_{10},K_{11}$ & $K_7/\sqrt2$, \ $\sqrt2(1-\cos\beta_0)/K_7$, \ $1/(1+q)$, \ $K_9/K_{10}$ & \ref{app:27}\\
+exponent $1/3$ in (29)--(32) & $\theta\in(0,1)$ & \ref{app:t0}\\
+$m_5$, $K_{12}$ & $M/(2+q)$, \ $1/(2+q)$ & \ref{app:t0}\\
+$K_{13},K_{14},K_{15}$, $f_9$ & $f_9$ as in step 8; trivial branch via $g_9=\min(f_9,1-\cos\beta_0)$ & \ref{app:t0}\\
+$f_{10}$ & $g_9/3+f_8^{(k)}$ & \ref{app:8ii}\\
+$f_{11}$ & $\frac32g_9+\frac32\sqrt{2f_{10}}+f_5''$ & \ref{app:38}\\
+$f_{12}$, $f_{13}$ & $g_9/(1-g_9)$, \ $\sqrt{2g_9}/(1-g_9)$ & \ref{app:39}\\
+$f_{14}$, $f_{15}$ & $f_{11}/(1-g_9)+qf_{13}$, \ $\delta+qf_{12}+f_{14}$ & \ref{app:Hc}\\
+$c$, $f_{16}$ & $c=1/2-\gamma$ with free $\gamma>0$ (Bir\'o: $1/2-c=f_{16}=\sqrt{f_{15}}$) & \ref{app:Hc}\\
+$f_{17}$ & $m_4(f_{15}/\gamma)$ & \ref{app:43}\\
+$f_{18}$, $f_{19}$ & $\sqrt{f_7+\gamma}$, \ $f_{18}+(q+\frac12)f_{17}$ & \ref{app:f19}\\
+$f_{20}$ & $(2+2\sqrt2)f_{19}$ & \ref{app:final}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%----------------------------------------------------------------------
+\subsection{Lemma 1\texorpdfstring{$'$}{'}: degenerate angles}\label{app:conv}
+Recall $a(w_1,w_2)=\abs{\arg(w_2/w_1)}$ if $w_1w_2\ne0$ and $a(w_1,w_2)=\pi$ otherwise. For all complex $w_1,w_2$:
+\begin{enumerate}[label=(\roman*$'$),start=3,leftmargin=*]
+\item $\abs{w_1-w_2}\ge\abs{w_1}\sin a(w_1,w_2)$;
+\item $\abs{w_1+w_2}\ge\abs{w_1}+\abs{w_2}\cos a(w_1,w_2)$.
+\end{enumerate}
+\begin{proof}
+If $w_1w_2\ne0$, let $\varphi=\arg(w_1/w_2)$. Then $\abs\varphi=a(w_1,w_2)$ (if $\arg z\ne\pi$ then $\arg(1/z)=-\arg z$, and if $\arg z=\pi$ then $\arg(1/z)=\pi$). Lemma~1(i) of \cite{Bir00b} gives $\abs{w_1-w_2}^2\ge\abs{w_1}^2\sin^2\varphi$, so $\abs{w_1-w_2}\ge\abs{w_1}\abs{\sin\varphi}=\abs{w_1}\sin a$; Lemma~1(iv) of \cite{Bir00b} gives (iv$'$), since $\cos\varphi=\cos a$. If $w_1w_2=0$, then $a=\pi$, and the claims read $\abs{w_1-w_2}\ge0$ and $\abs{w_1+w_2}\ge\abs{w_1}-\abs{w_2}$, which always hold.
+\end{proof}
+We also use that $\abs{\arg(-w)}=\pi-\abs{\arg w}$ for $w\ne0$ (if $\arg w=\vartheta\in(-\pi,\pi]$, then $\arg(-w)=\vartheta-\pi$ for $\vartheta>0$ and $\vartheta+\pi$ for $\vartheta\le0$). Multiplying a number by a positive real changes neither its argument nor whether it is $0$; so $\alpha_t=a(c_{t-1},b_t)=a(c_{t-1},tb_t)$.
+
+%----------------------------------------------------------------------
+\subsection{Setup}\label{app:setup}
+\emph{$n\ge2$.} If $n=1$, then $S_1=z_1=1>q$, contradicting (1).
+
+\emph{$k$ exists and $1\le k\le n-1$.} Suppose $\alpha_t\le\pi/4$ for every $1\le t\le n-1$. For each such $t$, Lemma~1$'$(iv$'$) with $w_1=c_{t-1}$, $w_2=b_t$ gives $\abs{c_t}\ge\abs{c_{t-1}}+\abs{b_t}\cos\alpha_t\ge\abs{c_{t-1}}+\abs{b_t}/\sqrt2$. Starting from $\abs{c_0}=1$ and adding up, $\abs{c_{n-1}}\ge1+(B_{n-1}-1)/\sqrt2\ge B_{n-1}/\sqrt2$. On the other hand, (4) gives $c_{n-1}=\sum_{j=0}^{n-1}b_jS_{n-j}$, so $\abs{c_{n-1}}\le qB_{n-1}$ by (1). Since $B_{n-1}\ge1$, this gives $q\ge1/\sqrt2$, a contradiction. So $k:=\min\{t:\alpha_t>\pi/4\}$ exists, $1\le k\le n-1$, and (5), (6) hold.
+
+%----------------------------------------------------------------------
+\subsection{Lemma 2 (no constants)}\label{app:lemma2}
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item For $1\le t\le n-1$: $\abs{c_{t-1}-tb_t}\le qB_{t-1}$. \\
+\emph{Proof.} By (3), $c_{t-1}-tb_t=\sum_{j=0}^{t-1}b_jS_{t-j}$. Each index $t-j$ lies in $[1,n]$, so $\abs{S_{t-j}}\le q$ by (1). Use the triangle inequality.
+\item For $1\le t\le n$: $\abs{c_{t-1}}\ge1+\abs{b_1}\cos\alpha_1+\dots+\abs{b_{t-1}}\cos\alpha_{t-1}$. \\
+\emph{Proof.} Induction on $t$. For $t=1$, $\abs{c_0}=1$. Step $t\to t+1$ ($t\le n-1$): Lemma~1$'$(iv$'$) with $w_1=c_{t-1}$, $w_2=b_t$.
+\end{enumerate}
+\begin{equation}\tag{$\star$}
+\abs{c_{t-1}}\ge\Bigl(1-\frac1{\sqrt2}\Bigr)+\frac{B_{t-1}}{\sqrt2}\ge\frac{B_{t-1}}{\sqrt2}\qquad(1\le t\le k);\quad\text{in particular } c_{t-1}\ne0.
+\end{equation}
+\emph{Proof.} In (ii), every $j\le t-1\le k-1$ has $\alpha_j\le\pi/4$ by (5), so $\cos\alpha_j\ge1/\sqrt2$. Hence $\abs{c_{t-1}}\ge1+(B_{t-1}-1)/\sqrt2$.
+\begin{enumerate}[label=(\roman*),start=3,leftmargin=*]
+\item For $1\le t\le n-1$: $\abs{c_{t-1}-tb_t}\ge\abs{c_{t-1}}\sin\alpha_t$. \\
+\emph{Proof.} Lemma~1$'$(iii$'$) with $w_1=c_{t-1}$, $w_2=tb_t$, since $a(c_{t-1},tb_t)=\alpha_t$.
+\end{enumerate}
+\emph{The angle $\alpha_k$.} $\pi/4<\alpha_k<\pi/2$. Hence $b_k\ne0$ and $\sin\alpha_k>1/\sqrt2$. \\
+\emph{Proof.} $\alpha_k>\pi/4$ is (6). Suppose $\alpha_k\ge\pi/2$. We have $c_{k-1}\ne0$ by $(\star)$. If $b_k=0$, then $\abs{c_{k-1}-kb_k}=\abs{c_{k-1}}$. If $b_k\ne0$, then $a(c_{k-1},-kb_k)=\pi-\alpha_k\in[0,\pi/2]$, so Lemma~1$'$(iv$'$) gives $\abs{c_{k-1}-kb_k}\ge\abs{c_{k-1}}+k\abs{b_k}\cos(\pi-\alpha_k)\ge\abs{c_{k-1}}$. In both cases (i) (valid since $k\le n-1$) and $(\star)$ give $B_{k-1}/\sqrt2\le\abs{c_{k-1}}\le\abs{c_{k-1}-kb_k}\le qB_{k-1}$, so $q\ge1/\sqrt2$, a contradiction. So $\alpha_k<\pi/2$; in particular $\alpha_k\ne\pi$, so $b_k\ne0$. Since $\sin$ is increasing on $[0,\pi/2]$, $\sin\alpha_k>\sin(\pi/4)=1/\sqrt2$.
+\begin{enumerate}[label=(\roman*),start=4,leftmargin=*]
+\item $\abs{c_{k-1}}<\sqrt2\,q\,B_{k-1}$. \\
+\emph{Proof.} (i) and (iii) at $t=k$ give $\abs{c_{k-1}}\sin\alpha_k\le qB_{k-1}$. Divide by $\sin\alpha_k>1/\sqrt2$ (and $qB_{k-1}>0$).
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{Lemma 3}\label{app:lemma3}
+Put
+\[
+\Ka:=\frac1{\sqrt2}-q,\qquad \Kb:=1+q,\qquad \Kc:=\frac1{\sqrt2(1+q)},\qquad \Kd:=1+\frac1{1/\sqrt2-q}.
+\]
+All four are positive because $q<1/\sqrt2$; moreover $0<\Ka<1/\sqrt2-1/2<1$ and $\Kb>1$.
+
+\begin{enumerate}[label=(\roman*),leftmargin=*]
+\item For $1\le t\le k$: $\Ka B_{t-1}\le t\abs{b_t}\le\Kb B_{t-1}$. In particular $b_t\ne0$ for $1\le t\le k$. \\
+\emph{Proof.} As $t\le k\le n-1$, Lemma~2(i) applies. Upper bound: $t\abs{b_t}\le\abs{c_{t-1}}+\abs{c_{t-1}-tb_t}\le B_{t-1}+qB_{t-1}$, using $\abs{c_{t-1}}\le B_{t-1}$. Lower bound: $t\abs{b_t}\ge\abs{c_{t-1}}-\abs{c_{t-1}-tb_t}\ge B_{t-1}/\sqrt2-qB_{t-1}$, by $(\star)$. Since $B_{t-1}\ge1$ and $\Ka>0$, $b_t\ne0$.
+\item For $1\le t\le k-1$: $\Kc\le\abs{c_t}/(t\abs{b_t})\le\Kd$. \\
+\emph{Proof.} $b_t\ne0$ by (i). Upper bound: $\abs{c_t}\le B_t=B_{t-1}+\abs{b_t}\le t\abs{b_t}/\Ka+\abs{b_t}$, so $\abs{c_t}/(t\abs{b_t})\le1/\Ka+1/t\le1+1/\Ka$. Lower bound: $t+1\le k$, so $(\star)$ at index $t+1$ gives $\abs{c_t}\ge B_t/\sqrt2\ge B_{t-1}/\sqrt2\ge t\abs{b_t}/(\sqrt2\,\Kb)$.
+\item For integers $1\le s\le u\le k$:
+\[
+\Bigl(\frac us\Bigr)^{\Ka}\le\frac{B_{u-1}}{B_{s-1}}\le\Bigl(\frac us\Bigr)^{\Kb}.
+\]
+\emph{Proof.} For $1\le t\le k$, $B_t/B_{t-1}=1+\abs{b_t}/B_{t-1}$ lies in $[1+\Ka/t,\,1+\Kb/t]$ by (i). Bernoulli's inequality says that for $x>-1$, $(1+x)^r\le1+rx$ if $0\le r\le1$, and $(1+x)^r\ge1+rx$ if $r\ge1$. With $x=1/t$ and $r=\Ka\in(0,1)$, resp.\ $r=\Kb\ge1$:
+\[
+(1+1/t)^{\Ka}\le B_t/B_{t-1}\le(1+1/t)^{\Kb}.
+\]
+Multiply over $t=s,\dots,u-1$ (all $\le k-1$); the product $\prod_{t=s}^{u-1}(1+1/t)=u/s$ telescopes. For $s=u$ all sides equal $1$.
+\end{enumerate}
+\emph{$m_1$, $m_2$.} (iii) with $s=1$, $u=k$ and $B_0=1$ gives $k^{\Ka}\le B_{k-1}\le k^{1+q}$. So $m_1(k):=k^{\Ka}$ and $m_2(k):=k^{1+q}$ work (S10). Bir\'o asks $m_j(k)>1$; ours equal $1$ at $k=1$, which does not matter because $k\ge2$ (\ref{app:cor1}).
+
+\emph{(T) Trivial bounds.} $\abs{c_t}\le B_t$ for every $t$, and $C_t\le(t+1)B_t$; in particular $C_{k-1}\le kB_{k-1}$. (Triangle inequality, and $\abs{c_j}\le B_j\le B_t$ for $j\le t$.)
+
+Bir\'o uses one pair of constants for (i) and (ii), namely $\min(\Ka,\Kc)$ and $\max(\Kb,\Kd)$. We keep the four constants separate (bookkeeping (B3)), because the large $\Kd\approx5.8$ would weaken $m_2$ and Corollary~1.
+
+%----------------------------------------------------------------------
+\subsection{Corollary 1}\label{app:cor1}
+Let $M:=(\sqrt2-1)/(2\delta)$. Then $B_{k-1}>M$, $k>M^{1/(1+q)}$, and $M>1$; hence $k\ge2$.
+\begin{proof}
+$(\star)$ at $t=k$ gives $\abs{c_{k-1}}\ge(1-1/\sqrt2)+B_{k-1}/\sqrt2$, and Lemma~2(iv) gives $\abs{c_{k-1}}<\sqrt2\,qB_{k-1}$. So
+\[
+1-\frac1{\sqrt2}<\Bigl(\sqrt2\,q-\frac1{\sqrt2}\Bigr)B_{k-1}=\sqrt2\,\delta B_{k-1},
+\]
+that is, $B_{k-1}>(1-1/\sqrt2)/(\sqrt2\,\delta)=M$. By \ref{app:lemma3}, $k^{1+q}\ge B_{k-1}>M$, so $k>M^{1/(1+q)}$. Finally $M-1=(1/\sqrt2-q)/\delta>0$. Since $B_0=1<M<B_{k-1}$, we have $k\ne1$.
+\end{proof}
+Bir\'o's $m_3(q)$ can be taken as $M^{1/(1+q)}$; it satisfies $m_3<k$ and $m_3\le M<B_{k-1}$.
+
+%----------------------------------------------------------------------
+\subsection{Corollary 2}\label{app:cor2}
+Let $\kappa:=M^{-1/(1+q)}$. By \ref{app:cor1}, $1/k<\kappa$.
+
+\begin{named}{Corollary 2 of \cite{Bir00b}, explicit form}
+Let $H\subseteq\{0,1,\dots,k-1\}$ and $y\ge0$, and suppose
+\begin{equation}\tag{7}
+\sum_{t\in H}\abs{c_t}\le y\,C_{k-1}.
+\end{equation}
+Then for every $\eps\in(0,1)$
+\begin{equation}\tag{8$'$}
+\sum_{t\in H}\abs{b_t}\le\Bigl[(\eps+1/k)^{\Ka}+\frac{y}{\eps\Kc}\Bigr]B_{k-1}.
+\end{equation}
+Hence $\sum_{t\in H}\abs{b_t}\le m_4(y)\,B_{k-1}$ with
+\[
+m_4(y):=\min\Bigl\{1,\ (\eps+\kappa)^{1/\sqrt2-q}+\sqrt2(1+q)\,\frac y\eps\Bigr\}.
+\]
+\end{named}
+\begin{proof}
+Let $s:=\lfloor\eps k\rfloor$. Since $0<\eps k<k$, we have $0\le s\le k-1$. Split $H=H_1\cup H_2$ with $H_1=H\cap\{0,\dots,s\}$ and $H_2=H\cap\{s+1,\dots,k-1\}$.
+
+(a) $\sum_{t\in H_1}\abs{b_t}\le\sum_{t=0}^s\abs{b_t}=B_s$ (recall $b_0=1$). Lemma~3(iii) with the pair $(s+1,k)$ gives $B_{k-1}/B_s\ge(k/(s+1))^{\Ka}$. So $B_s\le((s+1)/k)^{\Ka}B_{k-1}\le(\eps+1/k)^{\Ka}B_{k-1}$, because $s+1\le\eps k+1$ and $\Ka>0$.
+
+(b) For $t\in H_2$ we have $1\le t\le k-1$ and $t\ge s+1>\eps k$. Lemma~3(ii) gives $t\abs{b_t}\le\abs{c_t}/\Kc$, so $\abs{b_t}\le\abs{c_t}/(\Kc\eps k)$. Hence, by (7) and (T),
+\[
+\sum_{t\in H_2}\abs{b_t}\le\frac1{\Kc\eps k}\sum_{t\in H}\abs{c_t}\le\frac{yC_{k-1}}{\Kc\eps k}\le\frac{yB_{k-1}}{\Kc\eps}.
+\]
+Adding (a) and (b) gives (8$'$). For $m_4$: $1/k<\kappa$, the function $x\mapsto(\eps+x)^{\Ka}$ is increasing, $1/\Kc=\sqrt2(1+q)$, and trivially $\sum_{t\in H}\abs{b_t}\le\sum_{t=0}^{k-1}\abs{b_t}=B_{k-1}$.
+\end{proof}
+Bir\'o argues that if $y$ is small and (7) holds with some nonempty $H$, then $k$ is large, so that $k$ may be assumed arbitrarily large. We use Corollary~1 for the size of $k$ instead (bookkeeping (B4)); our form needs no smallness assumption on $y$.
+
+%----------------------------------------------------------------------
+\subsection{Lemma 4}\label{app:lemma4}
+For $1\le t\le k$:
+\[
+\frac{B_{t-1}}{\sqrt2}\le\abs{c_{t-1}}\le\frac{B_{t-1}}{\sqrt2}+\lambda B_{k-1},\qquad\lambda=\sqrt2\,\delta .
+\]
+\begin{proof}
+The lower bound is $(\star)$. For $t\le j\le k-1$, Lemma~1$'$(iv$'$) with $w_1=c_{j-1}$, $w_2=b_j$ and $\cos\alpha_j\ge1/\sqrt2$ (by (5)) gives $\abs{c_j}\ge\abs{c_{j-1}}+\abs{b_j}/\sqrt2$. Adding over $j=t,\dots,k-1$ (an empty sum if $t=k$) gives $\abs{c_{k-1}}\ge\abs{c_{t-1}}+(B_{k-1}-B_{t-1})/\sqrt2$. With Lemma~2(iv),
+\[
+\abs{c_{t-1}}\le\sqrt2\,qB_{k-1}-\frac{B_{k-1}-B_{t-1}}{\sqrt2}=\frac{B_{t-1}}{\sqrt2}+\sqrt2\,\delta B_{k-1}.\qedhere
+\]
+\end{proof}
+
+%----------------------------------------------------------------------
+\subsection{Lemma 5}\label{app:lemma5}
+Let $H_\alpha:=\{1\le t\le k-1:\alpha_t\le\alpha\}$.
+
+\emph{(i)} $\sum_{t\in H_\alpha}\abs{b_t}\le f_1B_{k-1}$, where $f_1:=\sqrt2\,\delta/(\cos\alpha-1/\sqrt2)$. \\
+\emph{Proof.} Use Lemma~2(ii) at $t=k$. For $j\in H_\alpha$, $\cos\alpha_j\ge\cos\alpha$; for $1\le j\le k-1$ with $j\notin H_\alpha$, $\cos\alpha_j\ge1/\sqrt2$ by (5). With $X:=\sum_{j\in H_\alpha}\abs{b_j}$,
+\[
+\abs{c_{k-1}}\ge1+\frac{B_{k-1}-1-X}{\sqrt2}+X\cos\alpha=1+\frac{B_{k-1}-1}{\sqrt2}+\Bigl(\cos\alpha-\frac1{\sqrt2}\Bigr)X\ge\frac{B_{k-1}}{\sqrt2}+\Bigl(\cos\alpha-\frac1{\sqrt2}\Bigr)X.
+\]
+With Lemma~2(iv), $(\cos\alpha-1/\sqrt2)X\le(\sqrt2q-1/\sqrt2)B_{k-1}=\sqrt2\,\delta B_{k-1}$. Divide by $\cos\alpha-1/\sqrt2>0$.
+
+\emph{(ii-b)} For $1\le t\le k-1$ with $t\notin H_\alpha$: $0\le\abs{c_{t-1}}-B_{t-1}/\sqrt2\le f_{2b}B_{t-1}$, where $f_{2b}:=q/\sin\alpha-1/\sqrt2>0$. \\
+\emph{Proof.} $t\notin H_\alpha$ and (5) give $\alpha<\alpha_t\le\pi/4$, so $\sin\alpha_t>\sin\alpha>0$. Lemma~2(iii) and (i) give $\abs{c_{t-1}}\sin\alpha_t\le qB_{t-1}$, so $\abs{c_{t-1}}\le(q/\sin\alpha)B_{t-1}$ (compare Bir\'o's (10)). The lower bound is $(\star)$. Positivity: $q/\sin\alpha-1/\sqrt2=(q-\sin\alpha/\sqrt2)/\sin\alpha$, and $\sin\alpha/\sqrt2<1/2<q$.
+
+\emph{(ii-a)} For $1\le t\le k-1$ with $t\notin H_\alpha$: $\bigl|t\abs{b_t}-B_{t-1}/2\bigr|\le f_{2a}B_{t-1}$, where
+\[
+f_{2a}:=\sqrt{q^2-\tfrac12\sin^2\alpha}+\min\Bigl(1,\frac q{\sin\alpha}\Bigr)\Bigl(\cos\alpha-\frac1{\sqrt2}\Bigr)+\frac{f_{2b}}{\sqrt2}.
+\]
+\emph{Proof.} Write $c:=c_{t-1}$ and $B:=B_{t-1}$. We have $c\ne0$ by $(\star)$ and $b_t\ne0$ by Lemma~3(i), and the angle between $c$ and $tb_t$ has absolute value $\alpha_t$. Lemma~1(i) of \cite{Bir00b} with $w_1=c$, $w_2=tb_t$, together with Lemma~2(i), gives (Bir\'o's (9))
+\[
+q^2B^2\ge\abs{c-tb_t}^2=\abs c^2\sin^2\alpha_t+(t\abs{b_t}-\abs c\cos\alpha_t)^2.
+\]
+By $(\star)$, $\abs c^2\ge B^2/2$, and $\sin^2\alpha_t>\sin^2\alpha$. So
+\[
+(t\abs{b_t}-\abs c\cos\alpha_t)^2\le B^2\bigl(q^2-\tfrac12\sin^2\alpha_t\bigr)\le B^2\bigl(q^2-\tfrac12\sin^2\alpha\bigr),
+\]
+where $q^2-\frac12\sin^2\alpha>\frac14-\frac14=0$. Hence $\bigl|t\abs{b_t}-\abs c\cos\alpha_t\bigr|\le B\sqrt{q^2-\frac12\sin^2\alpha}$. Now use the identity
+\[
+t\abs{b_t}-\frac B2=\bigl(t\abs{b_t}-\abs c\cos\alpha_t\bigr)+\abs c\Bigl(\cos\alpha_t-\frac1{\sqrt2}\Bigr)+\frac1{\sqrt2}\Bigl(\abs c-\frac B{\sqrt2}\Bigr).
+\]
+In the second term, $0\le\cos\alpha_t-1/\sqrt2\le\cos\alpha-1/\sqrt2$ (since $\alpha<\alpha_t\le\pi/4$), and $\abs c\le\min(1,q/\sin\alpha)B$ (by (T) and the proof of (ii-b)). The third term is at most $f_{2b}B/\sqrt2$ in absolute value, by (ii-b). The triangle inequality gives the claim.
+
+Bir\'o's $f_2:=\max(f_{2a},f_{2b})$ satisfies both inequalities of his Lemma~5(ii). As $\alpha\to\pi/4$ and then $q\to1/2$, $f_1,f_{2a},f_{2b}\to0$, as Bir\'o requires.
+
+%----------------------------------------------------------------------
+\subsection{Lemma 6}\label{app:lemma6}
+Bir\'o: for $1\le t\le k$, $t\abs{c_t}/C_{t-1}=3/2+O(f_5B_{k-1}/B_t)$. For $t\ge1$ put $P_t:=\sum_{j=1}^tj\abs{b_j}$ and $A_t:=\sum_{j=1}^tB_{j-1}$; note $C_{t-1}=\sum_{j=1}^t\abs{c_{j-1}}$. Define
+\[
+f_3:=f_{2a}+\frac{f_1}{2\Ka},\quad f_4:=f_3+3\delta,\quad K_4:=\frac1{\sqrt2(2+q)},\quad f_5':=(2+q)(f_3+3\delta),
+\]
+\[
+f_5'':=(2+q)\Bigl(f_3+3\delta+\bigl(\sqrt2(1+q)+\tfrac12\bigr)\kappa\Bigr)\ \ (\ge f_5').
+\]
+
+\emph{(13)} For every $t\ge1$: $P_t+A_t=tB_t$. \\
+\emph{Proof.} $tB_t=\sum_{j=1}^t(jB_j-(j-1)B_{j-1})=\sum_{j=1}^t\bigl(j(B_j-B_{j-1})+B_{j-1}\bigr)=\sum_{j=1}^t(j\abs{b_j}+B_{j-1})$.
+
+\emph{(11)} For $1\le t\le k-1$: $\abs{P_t-A_t/2}\le tf_3B_{k-1}$. \\
+\emph{Proof.} $P_t-A_t/2=\sum_{j=1}^t(j\abs{b_j}-B_{j-1}/2)$, and every $j$ here satisfies $j\le k-1$. For $j\notin H_\alpha$, Lemma~5(ii-a) gives $\abs{j\abs{b_j}-B_{j-1}/2}\le f_{2a}B_{j-1}\le f_{2a}B_{k-1}$; there are at most $t$ such $j$. For $j\in H_\alpha$, both $j\abs{b_j}$ and $B_{j-1}/2$ are $\ge0$, so $\abs{j\abs{b_j}-B_{j-1}/2}\le\max(j\abs{b_j},B_{j-1}/2)$. By Lemma~3(i), $B_{j-1}/2\le j\abs{b_j}/(2\Ka)$, and $1/(2\Ka)>1$ because $\Ka<1/2$. So the term is at most $j\abs{b_j}/(2\Ka)\le t\abs{b_j}/(2\Ka)$. Adding over $j\in H_\alpha$ and using Lemma~5(i) gives at most $tf_1B_{k-1}/(2\Ka)$.
+
+\emph{(12$'$)} For $1\le t\le k$: $0\le C_{t-1}-A_t/\sqrt2\le t\lambda B_{k-1}$. \\
+\emph{Proof.} Add Lemma~4 over the indices $1,\dots,t$ (all $\le k$): $0\le\abs{c_{j-1}}-B_{j-1}/\sqrt2\le\lambda B_{k-1}$. (Bir\'o obtains (12) from Lemma~5; this is S9.)
+
+\emph{Bir\'o's $f_4$.} For $1\le t\le k-1$: $\bigl|\frac3{\sqrt2}C_{t-1}-tB_t\bigr|\le tf_4B_{k-1}$. \\
+\emph{Proof.} Put $E_A:=A_t-\frac23tB_t$ and $E_c:=C_{t-1}-A_t/\sqrt2$. By (13), $tB_t=\frac32A_t+(P_t-A_t/2)$, so $E_A=-\frac23(P_t-A_t/2)$ and $\abs{E_A}\le\frac23tf_3B_{k-1}$ by (11). By (12$'$), $0\le E_c\le t\lambda B_{k-1}$. The identity $\frac3{\sqrt2}C_{t-1}-tB_t=\frac32E_A+\frac3{\sqrt2}E_c$ gives the bound $tf_3B_{k-1}+\frac3{\sqrt2}t\lambda B_{k-1}=t(f_3+3\delta)B_{k-1}$.
+
+\emph{$K_4$.} For $1\le t\le k$: $C_{t-1}\ge K_4tB_t$. \\
+\emph{Proof.} By Lemma~3(i), $j\abs{b_j}\le\Kb B_{j-1}$ for $j\le t\le k$, so $P_t\le\Kb A_t$, and (13) gives $tB_t\le(1+\Kb)A_t$. By (12$'$), $C_{t-1}\ge A_t/\sqrt2\ge tB_t/(\sqrt2(2+q))$.
+
+\emph{Lemma 6 for $1\le t\le k-1$:} $\bigl|t\abs{c_t}/C_{t-1}-3/2\bigr|\le f_5'B_{k-1}/B_t$. \\
+\emph{Proof.} Lemma~4 at index $t+1\le k$ gives $\abs{c_t}=B_t/\sqrt2+e_1$ with $0\le e_1\le\lambda B_{k-1}$. With $E_A$, $E_c$ as above, one has the identity
+\[
+t\abs{c_t}-\tfrac32C_{t-1}=\bigl(te_1-\tfrac32E_c\bigr)-\tfrac3{2\sqrt2}E_A .
+\]
+Since $te_1\in[0,t\lambda B_{k-1}]$ and $\frac32E_c\in[0,\frac32t\lambda B_{k-1}]$, we get $\abs{te_1-\frac32E_c}\le\frac32t\lambda B_{k-1}$. Also $\abs{\frac3{2\sqrt2}E_A}\le\frac1{\sqrt2}tf_3B_{k-1}$. Hence
+\[
+\bigl|t\abs{c_t}-\tfrac32C_{t-1}\bigr|\le tB_{k-1}\bigl(\tfrac32\lambda+f_3/\sqrt2\bigr)=tB_{k-1}\,\frac{3\delta+f_3}{\sqrt2}.
+\]
+Divide by $C_{t-1}\ge K_4tB_t$ and use $1/(\sqrt2K_4)=2+q$.
+
+\emph{Lemma 6 for $t=k$:} $\bigl|k\abs{c_k}/C_{k-1}-3/2\bigr|\le f_5''B_{k-1}/B_k$. \\
+\emph{Proof.} Write $B:=B_{k-1}$, and recall $k\ge2$, so $t=k-1\ge1$ is a valid index in (11) and (13).
+\begin{itemize}[leftmargin=*]
+\item Lemma~4 at $t=k$: $\abs{c_{k-1}}=B/\sqrt2+e$ with $0\le e\le\lambda B$.
+\item $c_k=c_{k-1}+b_k$. Put $r:=k(\abs{c_k}-\abs{c_{k-1}})$. Then $\abs r\le k\abs{b_k}\le\Kb B$ (Lemma~3(i) at $t=k$), and $k\abs{c_k}=kB/\sqrt2+ke+r$.
+\item Put $E_A:=A_{k-1}-\frac23(k-1)B$. As in the proof of $f_4$ (with $t=k-1$), $\abs{E_A}\le\frac23(k-1)f_3B$. Then $A_k=A_{k-1}+B=\frac23kB+\frac13B+E_A$.
+\item Put $E_c:=C_{k-1}-A_k/\sqrt2$. By (12$'$) at $t=k$, $0\le E_c\le k\lambda B$.
+\end{itemize}
+One has the identity
+\[
+k\abs{c_k}-\tfrac32C_{k-1}=\bigl(ke-\tfrac32E_c\bigr)+r-\frac B{2\sqrt2}-\tfrac3{2\sqrt2}E_A .
+\]
+As before, $\abs{ke-\frac32E_c}\le\frac32k\lambda B$. So
+\[
+\bigl|k\abs{c_k}-\tfrac32C_{k-1}\bigr|\le B\Bigl(\tfrac32k\lambda+\Kb+\frac1{2\sqrt2}+\frac{(k-1)f_3}{\sqrt2}\Bigr)\le kB\Bigl(\frac{3\delta+f_3}{\sqrt2}+\frac{\Kb+1/(2\sqrt2)}k\Bigr).
+\]
+Divide by $C_{k-1}\ge K_4kB_k$ ($K_4$ at $t=k$); then use $1/(\sqrt2K_4)=2+q$, $\sqrt2(\Kb+1/(2\sqrt2))=\sqrt2(1+q)+\frac12$, and $1/k<\kappa$.
+
+So Bir\'o's Lemma~6 holds for all $1\le t\le k$ with $f_5:=f_5''$. The extra term $(\sqrt2(1+q)+\frac12)\kappa$ is the cost of $t=k$, which Bir\'o treats in one sentence (``since $\abs{c_k}=\abs{c_{k-1}}+O(\abs{b_k})$'').
+
+%----------------------------------------------------------------------
+\subsection{Formula (14)}\label{app:14}
+For $1\le t\le n-1$, (14) holds, and hence
+\begin{equation}\tag{14$'$}
+\abs{2D_{t-1}-tc_t}\le qC_{t-1}\qquad(1\le t\le n-1).
+\end{equation}
+\begin{proof}
+Let $L_t:=\sum_{j=0}^{t-1}c_jS_{t-j}$ and $R_t:=2D_{t-1}-tc_t$. For $t=1$: $L_1=S_1$ and $R_1=2-c_1=1-b_1$, which are equal by (3) at $t=1$. For $2\le t\le n-1$, reindexing gives $L_t-L_{t-1}=S_t+\sum_{j=1}^{t-1}(c_j-c_{j-1})S_{t-j}=\sum_{j=0}^{t-1}b_jS_{t-j}$, which is $c_{t-1}-tb_t$ by (3). Also $R_t-R_{t-1}=2c_{t-1}-tc_t+(t-1)c_{t-1}=(t+1)c_{t-1}-t(c_{t-1}+b_t)=c_{t-1}-tb_t$. Induction gives $L_t=R_t$. Then (14$'$) follows from (1) and the triangle inequality.
+\end{proof}
+(Bir\'o states (14) for $t\le k$; it holds for $t\le n-1$, and $k\le n-1$.)
+
+%----------------------------------------------------------------------
+\subsection{Lemma 7 and (17)}\label{app:17}
+Lemma~7 of \cite{Bir00b}, in the general form we use, is Lemma~\ref{lem:beta}. Let $\beta_0\in\{\pi/8,\beta^*\}$; then $\beta_t\le\beta_0$ for $1\le t\le k$, by Lemma~\ref{lem:beta}(a) with $\beta=\pi/8$ (since $\sin(\pi/4)=1/\sqrt2>q$), resp.\ by Lemma~\ref{lem:beta}(b). Put $h_t:=\abs{D_{t-1}}/C_{t-1}$.
+
+\begin{equation}\tag{17}
+\cos\beta_0\le h_t\le1\qquad(1\le t\le k);\qquad\text{in particular } D_{t-1}\ne0.
+\end{equation}
+\emph{Proof.} The upper bound is the triangle inequality. The lower bound is the induction of (15) in the proof of Lemma~\ref{lem:beta}, with $\beta_0$ in place of $\beta$; it is valid because $\beta_j\le\beta_0$ for all $j\le t-1\le k-1$. (The same argument gives (17) also for $t=k+1$.)
+
+%----------------------------------------------------------------------
+\subsection{Lemma 8: notation and statement}\label{app:lemma8}
+Bir\'o's Lemma~8 states (i) $\abs{D_{k-1}}/C_{k-1}=1+O(f_9)$ and (ii) $\cos\beta_k=1+O(f_{10})$. Notation:
+\begin{itemize}[leftmargin=*]
+\item $h_t$ for $1\le t\le k+1$ as above; $X_t:=B_{k-1}/B_t$ for $1\le t\le k$. Since $B$ is nondecreasing, $X_t\ge1$ for $t\le k-1$ and $X_k\le1$.
+\item $F(h):=(2h^2+1)/(3h)$ for $h>0$, with fixed point $1$.
+\item $\rho_t:=t\abs{c_t}/C_{t-1}-3/2$ for $1\le t\le k$. By Lemma~6, $\abs{\rho_t}\le f_5'X_t$ for $t\le k-1$ and $\abs{\rho_k}\le f_5''X_k$.
+\item Since $\beta_0\le\pi/8<\pi/4$, $\cos\beta_0>1/\sqrt2$, so $\cos^2\beta_0>1/2$.
+\end{itemize}
+Free parameters: $\theta\in(0,1)$ and $\mu\in(0,2/3)$. Constants:
+\[
+f_7:=q^2-\tfrac14,\quad f_8:=\frac{f_7+f_5'}{6\cos\beta_0},\quad f_8^{(k)}:=\frac{f_7+f_5''}{6\cos\beta_0},\quad K_6:=\frac1\mu,\quad K_7:=\frac23-\mu,
+\]
+\[
+K_8:=\frac{K_7}{\sqrt2},\quad K_9:=\frac{\sqrt2(1-\cos\beta_0)}{K_7},\quad K_{10}:=\frac1{1+q},\quad K_{11}:=\frac{K_9}{K_{10}}=\frac{\sqrt2(1+q)(1-\cos\beta_0)}{K_7},
+\]
+\[
+m_5:=\frac M{2+q},\quad K_{12}:=\frac1{2+q},\quad
+f_9:=\max\Bigl\{\frac{f_8^{1-\theta}}\mu,\ \frac{K_{11}}{\log m_5},\ \frac{K_{11}}{\log(K_{12}f_8^{-\theta})}\Bigr\},
+\]
+\[
+f_{10}:=\frac{\min(f_9,1-\cos\beta_0)}3+f_8^{(k)}.
+\]
+
+\begin{named}{Lemma 8 of \cite{Bir00b}, explicit form}
+Suppose \textup{(L8a)} $m_5>1$ and \textup{(L8b)} $(2+q)f_8^\theta<1$. Then
+\textup{(i)} $1-f_9\le h_k\le1$, and \textup{(ii)} $1-f_{10}\le\cos\beta_k\le1$.
+\end{named}
+Without (L8a), (L8b) we still have $h_k\ge\cos\beta_0$ by (17), and (ii) holds with $f_9$ replaced by $1-\cos\beta_0$ (\ref{app:8ii}). Note that (L8b) implies $f_8<1$. The proof takes \ref{app:18}--\ref{app:8ii}.
+
+%----------------------------------------------------------------------
+\subsection{One step of the recursion: (18)}\label{app:18}
+For $1\le t\le k$ we have $\beta_t\le\beta_0<\pi$, so by the convention for $a(\cdot,\cdot)$, $D_{t-1}\ne0$, $c_t\ne0$, $\beta_t=\abs{\arg(c_t/D_{t-1})}$, and $\cos\beta_t\ge\cos\beta_0>0$.
+
+\emph{(18a)} For $1\le t\le k$:
+\[
+h_{t+1}\ge\frac{h_tC_{t-1}+\abs{c_t}\cos\beta_t}{C_t}=h_t+(\cos\beta_t-h_t)\frac{\abs{c_t}}{C_t}.
+\]
+\emph{Proof.} $D_t=D_{t-1}+c_t$. Lemma~1$'$(iv$'$) with $w_1=D_{t-1}$, $w_2=c_t$ gives $\abs{D_t}\ge\abs{D_{t-1}}+\abs{c_t}\cos\beta_t=h_tC_{t-1}+\abs{c_t}\cos\beta_t$. Divide by $C_t=C_{t-1}+\abs{c_t}>0$. The equality is a rearrangement.
+
+\emph{(18b)} For $1\le t\le k-1$: $\abs{c_t}/C_t\ge1/(\sqrt2(t+1))$ (S5): $(\star)$ at index $t+1\le k$ gives $\abs{c_t}\ge B_t/\sqrt2$, and $C_t\le(t+1)B_t$ by (T).
+
+\emph{(18$'$)} For $1\le t\le k-1$, if $\cos\beta_t\ge h_t$, then $h_{t+1}\ge h_t+(\cos\beta_t-h_t)/(\sqrt2(t+1))$. (By (18a) and (18b).)
+
+\emph{(18c)} For $1\le t\le k$ and real $H$: if $h_t\ge H$ and $\cos\beta_t\ge H$, then $h_{t+1}\ge H$. \\
+\emph{Proof.} By (18a), $h_{t+1}-H\ge\bigl((h_t-H)C_{t-1}+(\cos\beta_t-H)\abs{c_t}\bigr)/C_t\ge0$.
+
+Bir\'o's (18) is printed as $h_{t-1}\ge h_t+K_5(\cos\beta_t-h_t)/t$; the index should be $t+1$ (\S\ref{sec:misprint}). His form with $1/t$ holds with $K_5=1/(2\sqrt2)$, since $1/(\sqrt2(t+1))\ge1/(2\sqrt2\,t)$ for $t\ge1$.
+
+%----------------------------------------------------------------------
+\subsection{The inequality (19)}\label{app:19}
+This is Proposition~\ref{prop:19}: for $1\le t\le k-1$, $\cos\beta_t\ge F(h_t)-f_8X_t$, and $\cos\beta_k\ge F(h_k)-f_8^{(k)}$. In Bir\'o's form $O(f\,X_k^2)$ at $t=k$, note that $X_k\le1$, so $X_k^2\le X_k$; his form still holds there with a changed constant, because $X_k\ge1/(1+\Kb/k)\ge1/(2+q)$ by Lemma~3(i). Our (19$'$) at $t=k$ uses $X_k\le1$ directly.
+
+%----------------------------------------------------------------------
+\subsection{The two cases: (20)--(26)}\label{app:20}
+\emph{(20$'$)} $F'(h)=(2h^2-1)/(3h^2)$, so $F$ is increasing on $[1/\sqrt2,\infty)$. $(F(h)-h)'=-(1+h^2)/(3h^2)<0$, so $F(h)-h=(1-h^2)/(3h)$ is decreasing on $(0,\infty)$. For $0<H\le1$, $F(H)-H\ge2(1-H)/3$ (S3).
+
+\begin{named}{Lemma 8a (cases (25), (26))}
+Let $0<\varphi<1-\cos\beta_0$ and $H:=1-\varphi$, so $\cos\beta_0<H<1$. Let $1\le t_0\le k-1$ and $Q:=B_{k-1}/B_{t_0}$, and assume
+\begin{equation}\tag{24$'$}
+f_8Q\le\mu\varphi .
+\end{equation}
+Then for every $t$ with $t_0\le t\le k-1$:
+\begin{enumerate}[label=\textup{(\arabic*$'$)},start=25,leftmargin=*]
+\item if $h_t\ge H$, then $\cos\beta_t\ge1-\varphi/3-\mu\varphi\ge1-\varphi=H$;
+\item if $h_t\le H$, then $\cos\beta_t-h_t\ge K_7\varphi$, with $K_7=2/3-\mu>0$.
+\end{enumerate}
+\end{named}
+\begin{proof}
+For $t_0\le t\le k-1$ we have $B_t\ge B_{t_0}$, so $X_t\le Q$, and (19$'$) with (24$'$) gives $\cos\beta_t\ge F(h_t)-f_8Q\ge F(h_t)-\mu\varphi$.
+(25$'$): $h_t\in[H,1]$ (as $h_t\le1$ by (17)), and $H>\cos\beta_0>1/\sqrt2$. As $F$ is increasing there, $F(h_t)\ge F(H)\ge H+2\varphi/3=1-\varphi/3$. Hence $\cos\beta_t\ge1-\varphi/3-\mu\varphi$, and $(1-\varphi/3-\mu\varphi)-(1-\varphi)=\varphi(2/3-\mu)>0$.
+(26$'$): $h_t\in[\cos\beta_0,H]\subset(0,1]$. As $F(h)-h$ is decreasing, $F(h_t)-h_t\ge F(H)-H\ge2\varphi/3$. Hence $\cos\beta_t-h_t\ge2\varphi/3-\mu\varphi=K_7\varphi$.
+\end{proof}
+Bir\'o needs (24) ``with a large enough constant $K_6$'' and gets (26) with some $K_7$; ours are $K_6=1/\mu$ and $K_7=2/3-\mu$. Bir\'o's (25) also covers the case $1-f_9\le1/\sqrt2$ via Lemma~7; we avoid that case by the trivial branch in \ref{app:t0}.
+
+%----------------------------------------------------------------------
+\subsection{(27)--(28): if \texorpdfstring{$h$}{h} stays low, \texorpdfstring{$Q$}{Q} is small}\label{app:27}
+\begin{named}{Lemma 8b}
+Under the assumptions of Lemma 8a, suppose $h_t<H$ for every $t_0\le t\le k-1$. Then
+\begin{equation}\tag{28$'$}
+\varphi\log Q\le K_{11}.
+\end{equation}
+\end{named}
+\begin{proof}
+(27$'$) For $t_0\le t\le k-1$, (26$'$) gives $\cos\beta_t-h_t\ge K_7\varphi>0$. So (18$'$) applies, and $h_{t+1}-h_t\ge K_7\varphi/(\sqrt2(t+1))=K_8\varphi/(t+1)$. Adding over $t=t_0,\dots,k-1$,
+\[
+h_k-h_{t_0}\ge K_8\varphi\sum_{s=t_0+1}^k\frac1s .
+\]
+By (17), $h_k\le1$ and $h_{t_0}\ge\cos\beta_0$ (S4), so the left side is at most $1-\cos\beta_0$. Hence $\varphi\sum_{s=t_0+1}^k1/s\le(1-\cos\beta_0)/K_8=K_9$.
+
+Harmonic sum against $\log Q$: for $1\le s\le k$, Lemma~3(i) gives $B_s=B_{s-1}+\abs{b_s}\le B_{s-1}(1+\Kb/s)$. Multiplying over $s=t_0+1,\dots,k-1$ (an empty product if $t_0=k-1$, and then $Q=1$),
+\[
+Q=\frac{B_{k-1}}{B_{t_0}}\le\prod_{s=t_0+1}^{k-1}\Bigl(1+\frac{\Kb}s\Bigr).
+\]
+Since $\log(1+u)\le u$ for $u>-1$, $\log Q\le\Kb\sum_{s=t_0+1}^{k-1}1/s\le\Kb\sum_{s=t_0+1}^k1/s$. So $\sum_{s=t_0+1}^k1/s\ge K_{10}\log Q$ with $K_{10}=1/\Kb=1/(1+q)$. Combining, $\varphi\log Q\le K_9/K_{10}=K_{11}$.
+\end{proof}
+Bir\'o uses $h_{t_0}\ge0$ in (27); we use $h_{t_0}\ge\cos\beta_0$ (S4), which makes $K_9$ smaller by the factor $1-\cos\beta_0$. His harmonic sum runs over $t_0,\dots,k-1$ with weights $K_5/t$; ours over $t_0+1,\dots,k$ with weights $1/(\sqrt2(t+1))$ (S5).
+
+%----------------------------------------------------------------------
+\subsection{Choice of \texorpdfstring{$t_0$}{t0} and proof of Lemma 8(i)}\label{app:t0}
+Assume (L8a) and (L8b), and put $\varphi:=f_9$. Then $f_8<1$. We show $h_k\ge1-\varphi$; the bound $h_k\le1$ is the triangle inequality.
+
+\emph{Trivial branch.} If $\varphi\ge1-\cos\beta_0$, then (17) gives $h_k\ge\cos\beta_0\ge1-\varphi$, and we are done. (This replaces Bir\'o's $K_{14}$, $K_{15}$.) So assume from now on that $0<\varphi<1-\cos\beta_0$, and put $H:=1-\varphi$. Recall $k\ge2$.
+
+\emph{Choice of $t_0$} (Bir\'o's (29)--(32), with exponent $\theta$ instead of $1/3$; S6):
+\begin{itemize}[leftmargin=*]
+\item Case (29$'$): $f_8^\theta B_{k-1}\le1$. Put $t_0:=1$ (allowed, since $1\le k-1$).
+\item Case (30$'$): $f_8^\theta B_{k-1}>1$. Let $t_0$ be the least $t\in\{1,\dots,k-1\}$ with $f_8^\theta B_{k-1}/B_t<1$. It exists, because at $t=k-1$ the left side is $f_8^\theta<1$.
+\end{itemize}
+In both cases $1\le t_0\le k-1$. Put $Q:=B_{k-1}/B_{t_0}$ as in Lemma~8a.
+
+\emph{Claim 1: (24$'$) holds.} We show $f_8Q\le f_8^{1-\theta}$; then (24$'$) follows, since $\varphi\ge f_8^{1-\theta}/\mu$ by the definition of $f_9$. In case (29$'$), $Q=B_{k-1}/B_1\le B_{k-1}\le f_8^{-\theta}$. In case (30$'$), $Q<f_8^{-\theta}$ by the choice of $t_0$.
+
+\emph{Claim 2: $\varphi\log Q>K_{11}$.}
+\begin{itemize}[leftmargin=*]
+\item Case (29$'$): Lemma~3(i) at $t=1$ gives $B_1=1+\abs{b_1}\le1+\Kb=2+q$, and Corollary~1 gives $B_{k-1}>M$. So $Q>M/(2+q)=m_5>1$ by (L8a). Since $\varphi\ge K_{11}/\log m_5>0$, we get $\varphi\log Q>\varphi\log m_5\ge K_{11}$.
+\item Case (30$'$): first, $f_8^\theta B_{k-1}/B_{t_0-1}\ge1$ (if $t_0=1$, this is (30$'$) itself, with $B_0=1$, and it is strict; if $t_0\ge2$, it holds by the minimality of $t_0$). Second, Lemma~3(i) at $t=t_0$ gives $B_{t_0}\le(1+\Kb/t_0)B_{t_0-1}\le(2+q)B_{t_0-1}$, and the last inequality is strict when $t_0\ge2$. In both subcases one of the two inequalities is strict, so
+\[
+Q=\frac{B_{k-1}}{B_{t_0-1}}\cdot\frac{B_{t_0-1}}{B_{t_0}}>\frac{f_8^{-\theta}}{2+q}=K_{12}f_8^{-\theta}>1
+\]
+by (L8b). Since $\varphi\ge K_{11}/\log(K_{12}f_8^{-\theta})>0$, we get $\varphi\log Q>\varphi\log(K_{12}f_8^{-\theta})\ge K_{11}$.
+\end{itemize}
+
+\emph{Conclusion.} If $h_t<H$ for every $t_0\le t\le k-1$, Lemma~8b (which applies by Claim~1) gives $\varphi\log Q\le K_{11}$, contradicting Claim~2. So $h_{t_1}\ge H$ for some $t_1$ with $t_0\le t_1\le k-1$. Then (25$'$) gives $\cos\beta_{t_1}\ge H$, and (18c) gives $h_{t_1+1}\ge H$. If $t_1+1\le k-1$, repeat with $t_1+1$ in place of $t_1$. After finitely many steps, $h_k\ge H=1-f_9$.
+
+Bir\'o defines $f_9=K_{13}\max(1/\log(1/f_8),1/\log m_5)$ with $K_{13}$ ``large enough'', and treats $f_8\ge K_{14}$ by a trivial branch with $f_9\ge K_{15}$. At one fixed point $(q,\alpha)$ these are not needed: our $f_9$ is the three-term maximum, and its third term is about $K_{11}/(\theta\log(1/f_8))$ (float), which matches his $K_{13}/\log(1/f_8)$. His $m_5$ is ours, and his $K_{12}=1/(1+K_2)$ is ours with $K_2=\Kb$. Because (19$'$) is linear in $Q$, any $\theta\in(0,1)$ works; with the quadratic form of (19) one needs $\theta<1/2$.
+
+%----------------------------------------------------------------------
+\subsection{Lemma 8(ii)}\label{app:8ii}
+Let $\varphi':=\min(f_9,1-\cos\beta_0)$ and $H':=1-\varphi'$. By Lemma~8(i) and (17), $H'\le h_k\le1$, and $H'\ge\cos\beta_0>1/\sqrt2$. As $F$ is increasing on $[1/\sqrt2,1]$, (20$'$) gives
+\[
+F(h_k)\ge F(H')\ge H'+\tfrac23(1-H')=1-\varphi'/3 .
+\]
+With (19$'$) at $t=k$: $\cos\beta_k\ge1-\varphi'/3-f_8^{(k)}=1-f_{10}$; and $\cos\beta_k\le1$. Without (L8a), (L8b) the same proof works with $\varphi'=1-\cos\beta_0$, which (17) gives for free. (Bir\'o: ``the case $t=k$ of (19) shows that (ii) is a consequence of (i)''.)
+
+%----------------------------------------------------------------------
+\subsection{Section 4 of \texorpdfstring{\cite{Bir00b}}{[Bir00b]}: notation and inputs}\label{app:sec4}
+Bir\'o's Section~4 turns Lemma~8 into a contradiction in steps (38)--(47). Recall $2\le k\le n-1$. Write
+\[
+B:=B_{k-1},\quad C:=C_{k-1},\quad D:=D_{k-1},\quad h:=h_k=\abs D/C .
+\]
+Put $g_9:=\min(f_9,1-\cos\beta_0)$ if (L8a) and (L8b) hold, and $g_9:=1-\cos\beta_0$ otherwise. Then $0<g_9\le1-\cos\beta_0\le1-\cos(\pi/8)<1$. Inputs:
+\begin{enumerate}[label=(I\arabic*),leftmargin=*]
+\item $D\ne0$, $c_k\ne0$, and $\beta_k=\abs{\arg(c_k/D)}\le\beta_0$ (\ref{app:18}, Lemma~\ref{lem:beta}).
+\item $1-g_9\le h\le1$ (Lemma~8(i) and (17)), and $1-f_{10}\le\cos\beta_k\le1$ with $f_{10}=g_9/3+f_8^{(k)}$ (\ref{app:8ii}, in both cases of the definition of $g_9$).
+\item Lemma~6 at $t=k$: $k\abs{c_k}=(3/2+\rho_k)C$ with $\abs{\rho_k}\le f_5''$.
+\item (14) at $t=k$ (valid since $k\le n-1$): $\sum_{j=0}^{k-1}c_jS_{k-j}=2D-kc_k$.
+\item (3) at $t=k$ (valid since $k\le n-1$): $\sum_{j=0}^{k-1}b_jS_{k-j}=c_{k-1}-kb_k$.
+\item Corollary~2 (\ref{app:cor2}); $(\star)$ at $t=k$, in the strict form $\abs{c_{k-1}}>B/\sqrt2$; Lemma~2(iii) and $\sin\alpha_k>1/\sqrt2$ (\ref{app:lemma2}); (6).
+\end{enumerate}
+By (1), $\abs{S_{k-j}}\le q$ for $0\le j\le k-1$. The new free parameter is $\gamma>0$, which fixes $c=1/2-\gamma$; the parameter $\eps$ of Corollary~2 is used once, in \ref{app:43}.
+
+%----------------------------------------------------------------------
+\subsection{(38): \texorpdfstring{$f_{11}$}{f11}}\label{app:38}
+Let $f_{11}:=\frac32g_9+\frac32\sqrt{2f_{10}}+f_5''$. Then
+\begin{equation}\tag{38$'$}
+\bigl|S_k+c_1S_{k-1}+\dots+c_{k-1}S_1-D/2\bigr|\le f_{11}C .
+\end{equation}
+\begin{proof}
+By (I4) the expression inside the absolute value is $2D-kc_k-D/2=\frac32D-kc_k$. Put $u:=D/\abs D$, $\psi:=\arg(c_k/D)$ (so $\abs\psi=\beta_k$ by (I1)) and $r:=3/2+\rho_k$. Then $D=hCu$ and $c_k=\abs{c_k}e^{i\psi}u$, so by (I3) $kc_k=rCue^{i\psi}$. Hence
+\[
+\tfrac32D-kc_k=Cu\bigl(\tfrac32h-re^{i\psi}\bigr),\qquad \tfrac32h-re^{i\psi}=\tfrac32(h-1)+\tfrac32(1-e^{i\psi})-\rho_ke^{i\psi}.
+\]
+Now $\abs{h-1}=1-h\le g_9$ by (I2); $\abs{1-e^{i\psi}}=\sqrt{2(1-\cos\psi)}\le\sqrt{2f_{10}}$ by (I2), since $\cos\psi=\cos\beta_k$; and $\abs{\rho_ke^{i\psi}}\le f_5''$ by (I3). The triangle inequality and $\abs u=1$ give (38$'$).
+\end{proof}
+Bir\'o writes (38) as $D/2+O(f_{11}C)$. The square root comes from Lemma~8(ii): it controls $1-\cos\beta_k$, so the angle $\beta_k$ itself is controlled only to order $\sqrt{f_{10}}$. This is correct, not a gap, but costly: $f_{11}\approx\frac32\sqrt{2g_9/3}\approx1.22\sqrt{g_9}$ for small $g_9$ (float).
+
+%----------------------------------------------------------------------
+\subsection{(39)--(41): \texorpdfstring{$f_{12}$, $f_{13}$}{f12, f13}}\label{app:39}
+Put $t_j:=c_j/D$ for $0\le j\le k-1$ (Bir\'o's (39); $D\ne0$ by (I1)), and
+\[
+f_{12}:=\frac{g_9}{1-g_9},\qquad f_{13}:=\frac{\sqrt{2g_9}}{1-g_9}.
+\]
+\emph{(40$'$)} $\sum_{j=0}^{k-1}t_j=1$ and $0\le\sum_{j=0}^{k-1}\abs{t_j}-1\le f_{12}$. Moreover $\sum_j(\abs{t_j}-\re t_j)=\sum_j\abs{t_j}-1$, and every term $\abs{t_j}-\re t_j$ is $\ge0$. \\
+\emph{Proof.} $\sum_{j=0}^{k-1}c_j=D$ (as $c_0=1$), so $\sum t_j=1$. Next $\sum\abs{t_j}=C/\abs D=1/h$, and $1/h-1=(1-h)/h$; this is $\ge0$ since $h\le1$, and $\le g_9/(1-g_9)$ since $1-h\le g_9$ and $h\ge1-g_9>0$. Finally $\sum(\abs{t_j}-\re t_j)=\sum\abs{t_j}-\re\sum t_j=\sum\abs{t_j}-1$, and $\abs w\ge\re w$ for every $w$.
+
+\emph{(41$'$)} $\sum_{j=0}^{k-1}\bigl|\abs{t_j}-t_j\bigr|\le f_{13}$. \\
+\emph{Proof.} Lemma~1(v) of \cite{Bir00b} gives $\bigl|\abs{t_j}-t_j\bigr|^2=2(\abs{t_j}-\re t_j)\abs{t_j}$. By the Cauchy--Schwarz inequality and (40$'$),
+\[
+\sum_j\bigl|\abs{t_j}-t_j\bigr|\le\sqrt2\Bigl(\sum_j(\abs{t_j}-\re t_j)\Bigr)^{1/2}\Bigl(\sum_j\abs{t_j}\Bigr)^{1/2}=\sqrt{2(1/h-1)/h}=\frac{\sqrt{2(1-h)}}h\le\frac{\sqrt{2g_9}}{1-g_9}.
+\]
+
+%----------------------------------------------------------------------
+\subsection{(42) and the set \texorpdfstring{$H_c$}{Hc}: \texorpdfstring{$f_{14}$, $f_{15}$}{f14, f15}, and the choice of \texorpdfstring{$c$}{c}}\label{app:Hc}
+Let $f_{14}:=f_{11}/(1-g_9)+qf_{13}$ and $f_{15}:=\delta+qf_{12}+f_{14}$.
+
+\emph{(42$'$)} $\bigl|\sum_{j=0}^{k-1}\abs{t_j}S_{k-j}-1/2\bigr|\le f_{14}$. In particular $\sum_j\abs{t_j}\re S_{k-j}\ge1/2-f_{14}$. \\
+\emph{Proof.} Divide (38$'$) by $D$: $\sum t_jS_{k-j}-1/2$ has modulus at most $f_{11}C/\abs D=f_{11}/h\le f_{11}/(1-g_9)$. By (1) and (41$'$), $\bigl|\sum\abs{t_j}S_{k-j}-\sum t_jS_{k-j}\bigr|\le\sum\bigl|\abs{t_j}-t_j\bigr|\abs{S_{k-j}}\le qf_{13}$. Use the triangle inequality, and $\re z\ge1/2-\abs{z-1/2}$.
+
+\emph{The set $H_c$.} Let $\gamma>0$ and $c:=1/2-\gamma$ (S7). Put $H_c:=\{0\le j\le k-1:\re S_{k-j}\le c\}$ and $T_c:=\sum_{j\in H_c}\abs{t_j}$.
+
+\emph{Claim.} $(q-c)T_c\le f_{15}$, hence $T_c\le f_{15}/\gamma$. \\
+\emph{Proof.} For $j\in H_c$, $\re S_{k-j}\le c$; for $j\notin H_c$, $\re S_{k-j}\le\abs{S_{k-j}}\le q$ by (1). Since $\abs{t_j}\ge0$,
+\[
+\sum_j\abs{t_j}\re S_{k-j}\le q\Bigl(\sum_j\abs{t_j}-T_c\Bigr)+cT_c=q\sum_j\abs{t_j}-(q-c)T_c .
+\]
+With (42$'$) and $\sum\abs{t_j}\le1+f_{12}$ (40$'$), $(q-c)T_c\le q(1+f_{12})-1/2+f_{14}=f_{15}$. Finally $q-c=\delta+\gamma>\gamma>0$.
+
+\emph{Consequence.} With $y:=f_{15}/\gamma$, $\sum_{j\in H_c}\abs{c_j}\le yC$, because $\abs{c_j}=\abs{t_j}\abs D\le\abs{t_j}C$ (as $\abs D=hC\le C$).
+
+Bir\'o proves $(1/2-c)T_c\le f_{15}$ (the Claim with $q-c$ replaced by the smaller $1/2-c=\gamma$) and takes $\gamma=f_{16}:=\sqrt{f_{15}}$. We keep $\gamma$ free.
+
+%----------------------------------------------------------------------
+\subsection{(43): \texorpdfstring{$f_{17}$}{f17}}\label{app:43}
+Let $f_{17}:=m_4(y)=\min\{1,(\eps+\kappa)^{\Ka}+\sqrt2(1+q)y/\eps\}$, with $y=f_{15}/\gamma$. Then
+\begin{equation}\tag{43}
+\sum_{j\in H_c}\abs{b_j}\le f_{17}B .
+\end{equation}
+\emph{Proof.} $H_c\subseteq\{0,\dots,k-1\}$, $y\ge0$, and (7) holds with this $y$ by \ref{app:Hc}; apply Corollary~2. ($H_c$ may contain $j=0$; Corollary~2 allows this, since its part (a) counts $b_0=1$ inside $B_s$.)
+
+%----------------------------------------------------------------------
+\subsection{\texorpdfstring{$f_{18}$ and $f_{19}$}{f18 and f19}}\label{app:f19}
+Let $f_{18}:=\sqrt{f_7+\gamma}$ and $f_{19}:=f_{18}+(q+\frac12)f_{17}$.
+
+\emph{Claim A.} For $0\le j\le k-1$ with $j\notin H_c$: $\abs{S_{k-j}-1/2}<f_{18}$. For every $0\le j\le k-1$: $\abs{S_{k-j}-1/2}\le q+1/2$. \\
+\emph{Proof.} $j\notin H_c$ means $\re S_{k-j}>c=1/2-\gamma$. By the identity $\abs{S-1/2}^2=\abs S^2-\re S+1/4$ and (1), $\abs{S_{k-j}-1/2}^2<q^2-(1/2-\gamma)+1/4=f_7+\gamma$. The second statement is the triangle inequality with (1).
+
+\emph{Claim B.} $\bigl|S_k+b_1S_{k-1}+\dots+b_{k-1}S_1-c_{k-1}/2\bigr|\le f_{19}B$. \\
+\emph{Proof.} Since $c_{k-1}=\sum_{j=0}^{k-1}b_j$, the expression inside the absolute value equals $\sum_{j=0}^{k-1}b_j(S_{k-j}-1/2)$. Split the sum into $j\notin H_c$ and $j\in H_c$ and use Claim~A and (43):
+\[
+\Bigl|\sum_{j=0}^{k-1}b_j(S_{k-j}-\tfrac12)\Bigr|\le f_{18}\sum_{j\notin H_c}\abs{b_j}+(q+\tfrac12)\sum_{j\in H_c}\abs{b_j}\le f_{18}B+(q+\tfrac12)f_{17}B,
+\]
+because $\sum_{j=0}^{k-1}\abs{b_j}=B$.
+
+%----------------------------------------------------------------------
+\subsection{(44)--(47): the contradiction}\label{app:final}
+\begin{equation}\tag{44$'$}
+\Bigl|\frac{c_{k-1}}2-kb_k\Bigr|\le f_{19}B .
+\end{equation}
+\emph{Proof.} By (I5), $S_k+b_1S_{k-1}+\dots+b_{k-1}S_1=c_{k-1}-kb_k$. Insert this into Claim~B: $(c_{k-1}-kb_k)-c_{k-1}/2=c_{k-1}/2-kb_k$.
+
+\emph{Bir\'o's route (45)--(47).} Put $f_{20}:=f_{19}/(1/\sqrt2-1/2)=(2+2\sqrt2)f_{19}$. Lemma~2(iii) at $t=k$ and $\sin\alpha_k>1/\sqrt2$ give $\abs{c_{k-1}-kb_k}\ge\abs{c_{k-1}}/\sqrt2$. From (44$'$), since $c_{k-1}-kb_k=c_{k-1}/2+(c_{k-1}/2-kb_k)$, we get $\abs{c_{k-1}-kb_k}\le\abs{c_{k-1}}/2+f_{19}B$. So $(1/\sqrt2-1/2)\abs{c_{k-1}}\le f_{19}B$, that is,
+\begin{equation}\tag{45}
+\abs{c_{k-1}}\le f_{20}B .
+\end{equation}
+By $(\star)$ at $t=k$,
+\begin{equation}\tag{46}
+\abs{c_{k-1}}>B/\sqrt2 .
+\end{equation}
+Together, $B/\sqrt2<f_{20}B$, i.e.
+\begin{equation}\tag{47}
+1/\sqrt2<f_{20}.
+\end{equation}
+So if $f_{20}\le1/\sqrt2$, that is, if $f_{19}\le(2-\sqrt2)/4$ (FIN-B), we have a contradiction.
+
+\emph{Our final step} (S8): if $f_{19}\le1/4$ (FIN), Proposition~\ref{prop:fin} gives a contradiction directly from (44$'$), (46) and (6). Note that $(2-\sqrt2)/4<1/4$, so (FIN-B) implies (FIN).
+
+%----------------------------------------------------------------------
+\subsection{End of the proof of Theorem~\ref{thm:explicit}}\label{app:end}
+Let $q,\alpha,\beta_0,\theta,\mu,\eps,\gamma$ satisfy (P1)--(P4), (L8a), (L8b) and (FIN), and suppose that some system $z_1=1,z_2,\dots,z_n$ satisfies (1) with this $q$. Every step of \ref{app:conv}--\ref{app:final} applies to this system, and \ref{app:final} (with Proposition~\ref{prop:fin}) gives a contradiction. With (FIN-B) in place of (FIN), Bir\'o's (45)--(47) give the contradiction. None of the conditions depends on the system. Hence $\max_{1\le j\le n}\abs{S_j}>q$ for every system $z_1=1,z_2,\dots,z_n$. \qed
+
+(Strictly, (L8a) and (L8b) are not needed for the logic: without them $g_9=1-\cos\beta_0$ and the chain still holds. But then $f_{19}$ is far above $1/4$, so the theorem simply requires them.)
+
+
+\end{document}

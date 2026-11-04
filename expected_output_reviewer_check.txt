@@ -1,0 +1,25 @@
+python-flint Arb check, prec = 256
+  eps   = 2^(-318600000000000000400)
+  a     = 2^(-212400000000000000200)
+  Lam   = 2^(106200000000000000000)
+  phi   = 33/10000000000000000000000
+  gam   = 1/100000
+  theta = 1/110000
+  mu    = 1/714
+  log2(f5) = -1.06200000000000e+20
+  f15 = 1.109764284e-10   y = 7.923716989e-8   m4 = 0.1088323833
+  ok   C1  0 < eps <= (sqrt2-1)/4
+  ok   C2  0 < a <= 1/2, cos(alpha)-s > 0, sin(alpha) > 0
+  ok   C3  1 < Lam <= B_low
+  ok   C4  0 < phi <= 1 - s
+  ok   C5  0 < gam < 2/3
+  ok   C6  f7 + f5*Lam <= 6 cos(pi/8) gam phi   [log2(rhs/lhs) = 17.0011]
+  ok   C7  s K7 phi log(Lam/(2+q)) > (1-cos(pi/8))(1+q)   [lhs/rhs = 1.0029019]
+  ok   C8  0 < theta <= 1
+  ok   C9  mu > 0
+  ok   C10 0 < K1, 2 K1 <= 1, R >= 1
+  ok   C11 f19 < (2-sqrt2)/4   [f19 = 0.1462564428, slack = 0.000190167]
+PASS
+certified (given the derivations in reviewer_constants.md):
+  max_{1<=j<=n} |S_j| > 1/2 + eps for every n and all z_1 = 1, z_2, ..., z_n,
+  with eps = 2^(-318600000000000000400)
