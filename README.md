@@ -1,4 +1,5 @@
-   > **Note (4 Nov 2026).** After publishing this, I learned that R. Pinho had already proposed, on 2 Nov 2026, a much better explicit value from Biró's method, $C_{42}\ge 1/2+2^{-4096}$* (unrefereed; [teorth/optimizationproblems PR #310](https://github.com/teorth/optimizationproblems/pull/310)). His argument replaces the additive step in Biró's Lemma 8 by a contraction, which gives a much faster rate. The bound in this repository is far weaker. The note will be updated.
+> **Note (4 Nov 2026).** After the first version was published, I learned that R. Pinho had already proposed, on 2 Nov 2026, a much better explicit value from Biró's method, $C_{42}\ge 1/2+2^{-4096}$* (unrefereed; [teorth/optimizationproblems PR #310](https://github.com/teorth/optimizationproblems/pull/310)). His argument replaces part of Biró's Lemma 8 by a contraction, which gives a much faster rate. The bound in this repository is far weaker: it is the value that Biró's argument gives as it is written. Version 1.0.1 of the note cites his work (Section 4.4).
+
 # An explicit lower bound in Turán's pure power sum problem
 
 **Claim.** For every $n\ge1$ and all complex numbers $z_1=1,z_2,\dots,z_n$,
@@ -13,7 +14,9 @@ A more conservative value, whose proof uses Biró's own Lemma 7 ($\beta_t\le\pi/
 
 **Status.** Unrefereed. No professional mathematician has checked the argument. Made with substantial help from an AI model (see [AI use](#ai-use)). Corrections are very welcome (GitHub issue or email).
 
-**Version.** 1.0.0 (November 2026).
+**Versions.**
+- 1.0.1 (4 Nov 2026): the note cites R. Pinho's earlier and much better explicit value (introduction and Section 4.4). Mathematics and checkers unchanged.
+- 1.0.0 (4 Nov 2026): first version, [doi:10.5281/zenodo.23961978](https://doi.org/10.5281/zenodo.23961978).
 
 **Author:** Vasileios Bakeas, Department of Mechanical Engineering, University of Thessaly, Volos, Greece (bakeasb@gmail.com)
 
