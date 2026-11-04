@@ -1,3 +1,4 @@
+   > **Note (4 Nov 2026).** After publishing this, I learned that R. Pinho had already proposed, on 2 Nov 2026, a much better explicit value from Biró's method, $C_{42}\ge 1/2+2^{-4096}$* (unrefereed; [teorth/optimizationproblems PR #310](https://github.com/teorth/optimizationproblems/pull/310)). His argument replaces the additive step in Biró's Lemma 8 by a contraction, which gives a much faster rate. The bound in this repository is far weaker. The note will be updated.
 # An explicit lower bound in Turán's pure power sum problem
 
 **Claim.** For every $n\ge1$ and all complex numbers $z_1=1,z_2,\dots,z_n$,
