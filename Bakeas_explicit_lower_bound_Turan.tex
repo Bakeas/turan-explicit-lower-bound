@@ -43,7 +43,7 @@
 \email{bakeasb@gmail.com}
 \urladdr{https://orcid.org/0009-0002-9714-9372}
 
-\date{November 2026. Unrefereed.}
+\date{November 2026 (version 1.0.1). Unrefereed.}
 
 \subjclass[2020]{Primary 11N30; Secondary 30A10, 65G30}
 \keywords{Tur\'an's pure power sum problem, power sums, Erd\H{o}s problem \#519, explicit constants, interval arithmetic}
@@ -53,7 +53,7 @@ For $n\ge 1$ let $R_n=\min\max_{1\le k\le n}\abs{z_1^k+\dots+z_n^k}$, the minimu
 \[
 R_n>\tfrac12+2^{-\NO}\qquad\text{for every } n;
 \]
-in particular $R_n>1/2+10^{-10^{16}}$. The method is entirely Bir\'o's. Inside his argument we add a few sharpenings, all of which are listed. With his own versions of the angle bound (Lemma~7) and of the final step, the same computation gives $R_n>1/2+2^{-\NI}$. The final numerical inequalities are verified in ball arithmetic. The work was done with substantial help from an AI model; it has not been refereed.
+in particular $R_n>1/2+10^{-10^{16}}$. The method is entirely Bir\'o's. Inside his argument we add a few sharpenings, all of which are listed. With his own versions of the angle bound (Lemma~7) and of the final step, the same computation gives $R_n>1/2+2^{-\NI}$. The final numerical inequalities are verified in ball arithmetic. A much better explicit value, $R_n>1/2+2^{-4096}$, had already been proposed by R.~Pinho, with a contraction argument in place of part of Bir\'o's Lemma~8; our value is the one that Bir\'o's argument gives as it is written. The work was done with substantial help from an AI model; it has not been refereed.
 \end{abstract}
 
 \maketitle
@@ -71,7 +71,9 @@ Bir\'o defines $R_n$ with the normalization $\max_j\abs{z_j}=1$, and notes that 
 There is an effectively computable absolute constant $q>1/2$ such that $\max_{1\le j\le n}\abs{S_j}>q$ for every $n$ and all complex numbers $z_1=1,z_2,\dots,z_n$.
 \end{named}
 
-Bir\'o remarks that a concrete value of $q$ could be obtained by following the steps of his proof, but he does not compute one \cite[\S1]{Bir00b}. The entry for $C_{42}$ in \cite{Tao} records that this value is not known, and the forum page of Erd\H{o}s problem \#519 asks for it \cite{Blo}. In the other direction, Bir\'o proved $\limsup R_n<1$ \cite{Bir00}; see \cite{Tao} for the current upper bounds. In this note we compute an explicit value.
+Bir\'o remarks that a concrete value of $q$ could be obtained by following the steps of his proof, but he does not compute one \cite[\S1]{Bir00b}. The entry for $C_{42}$ in \cite{Tao} records that this value is not known, and the forum page of Erd\H{o}s problem \#519 asks for it \cite{Blo}. In the other direction, Bir\'o proved $\limsup R_n<1$ \cite{Bir00}; see \cite{Tao} for the current upper bounds. In this note we compute the explicit value that Bir\'o's argument gives when it is followed as it is written.
+
+\emph{Prior work.} After the first version of this note was made public, we learned that R.~Pinho had already proposed, on 2 November 2026, the much better explicit value $R_n>1/2+2^{-4096}$ \cite{Pin310} (unrefereed, prepared with AI). We had missed it. His argument and ours are compared in \S\ref{sec:pinho}; our Theorems~\ref{thm:main} and~\ref{thm:cons} are far weaker.
 
 \begin{theorem}\label{thm:main}
 For every $n\ge1$ and all complex numbers $z_1=1,z_2,\dots,z_n$,
@@ -95,11 +97,11 @@ The method and all of its ideas are A.~Bir\'o's \cite{Bir00b}. We follow his pro
 \subsection*{Why the bound is so close to $1/2$}
 The following estimates are floating-point approximations at the parameters of Theorem~\ref{thm:main}; they are only a guide and are not used in any proof. Write $\delta=q-1/2$. Three features of the argument determine the size of $N_0$.
 \begin{enumerate}[label=(\roman*)]
-\item Lemma~8 of \cite{Bir00b} shows that $h_k=\abs{D_{k-1}}/C_{k-1}$ is close to $1$ (notation in Section~\ref{sec:biro}), but only at a logarithmic rate: $1-h_k\le g_9\approx 3K_{11}/\log(1/\delta)$ with $K_{11}\approx0.108$.
+\item Lemma~8 of \cite{Bir00b} shows that $h_k=\abs{D_{k-1}}/C_{k-1}$ is close to $1$ (notation in Section~\ref{sec:biro}), but only at a logarithmic rate: $1-h_k\le g_9\approx 3K_{11}/\log(1/\delta)$ with $K_{11}\approx0.108$. This is a feature of Bir\'o's proof of Lemma~8, not of the method: Pinho's contraction argument gives a rate that is a power of $\delta$ (\S\ref{sec:pinho}).
 \item In (38) and (41) of \cite{Bir00b} this deviation enters through square roots, so the final error term is $f_{15}\approx1.93\sqrt{g_9}$.
 \item Corollary~2 of \cite{Bir00b} transfers smallness from the $c_j$ to the $b_j$ at a high price: its bound contains the term $(\eps+1/k)^{1/\sqrt2-q}$ with exponent $1/\sqrt2-q\approx0.207$, which forces $\eps\approx10^{-4}$, and a term proportional to $f_{15}/(\gamma\eps)$.
 \end{enumerate}
-The final condition $f_{19}\le1/4$ then needs $f_{15}\approx7\cdot10^{-9}$, hence $g_9\approx1.5\cdot10^{-17}$, hence $\log(1/\delta)\approx2\cdot10^{16}$. So $q-1/2$ is doubly exponentially small. A sharper form of Corollary~2 would help most.
+The final condition $f_{19}\le1/4$ then needs $f_{15}\approx7\cdot10^{-9}$, hence $g_9\approx1.5\cdot10^{-17}$, hence $\log(1/\delta)\approx2\cdot10^{16}$. So, in Bir\'o's argument as written, $q-1/2$ is doubly exponentially small.
 
 \subsection*{Status}
 This note has not been refereed, and no professional mathematician has checked it yet. The work was done with substantial help from an AI model. Separate instances of the model re-derived the constants independently and found no error; Section~\ref{sec:status} describes what was checked and what was not.
@@ -337,6 +339,15 @@ Bir\'o's $m_2(k)=\prod_{l=1}^{k-1}(1+K_2/l)$ bounds $B_{k-1}$ from above. We use
 \item Steps that \cite{Bir00b} states in one sentence are written out: Lemma~6 at $t=k$ (the extra term $(\sqrt2(1+q)+\frac12)\kappa$ in $f_5''$), (19) at $t=k$, the trivial branches of Lemma~8 (the constants $K_{13}$--$K_{15}$ are replaced by the three-term maximum $f_9$ and by $g_9=\min(f_9,1-\cos\beta_0)$), and the steps (38)--(47) with every constant.
 \end{enumerate}
 
+\subsection{Comparison with Pinho's argument}\label{sec:pinho}
+R.~Pinho \cite{Pin310} replaces the second half of Lemma~8 (the threshold $H=1-\varphi$, Lemma~8a and the harmonic sum in (27)) by a contraction. In our notation, put $g_t=1-h_t$ and $w_t=\abs{c_t}/C_t$, and let $E$ bound the error term in (19) for $t_0\le t\le k$. The projection inequality (18a) and $F(h)-h\ge(1-h)/3$ give
+\[
+g_{t+1}\le\Bigl(1-\frac{w_t}{3}\Bigr)g_t+2w_tE ,
+\]
+and with $w_t\ge1/t$ this yields $1-h_k\le6E+\prod_{t=t_0}^{k-1}\bigl(1-\tfrac1{3t}\bigr)\le6E+(t_0/k)^{1/3}$. So the deficit $1-h_k$ decays like a power of $k/t_0$, and not like $1/\log(k/t_0)$ as in Lemma~8b. Since $k/t_0$ can be taken to be a power of $1/\delta$, the logarithmic loss that dominates our Theorems~\ref{thm:main} and~\ref{thm:cons} disappears, and Pinho obtains $R_n>1/2+2^{-4096}$ for every $n$. His note was written and checked with AI models and has not been refereed. We have read it once and found no error, but we have not checked it independently.
+
+Our Theorems~\ref{thm:main} and~\ref{thm:cons} are therefore far from the best explicit value. Their only interest is as an explicit version of Bir\'o's argument as it is written, with each of his constants identified (Table~\ref{tab:constants}). Pinho's contraction could be combined with the sharper constants of this note; we have not done this.
+
 \subsection{Which changes each theorem uses}
 Table~\ref{tab:uses} lists, for each proof, which of S1--S10 it uses. The independent derivation is described in Section~\ref{sec:status}; it uses Bir\'o's route for (12) and the bound $B_{k-1}\le k(k+1)/2$ instead of S10.
 
@@ -493,8 +504,11 @@ The FLINT team, \emph{FLINT: Fast Library for Number Theory}, \url{https://flint
 \bibitem[Joh17]{Joh17}
 F.~Johansson, \emph{Arb: efficient arbitrary-precision midpoint-radius interval arithmetic}, IEEE Trans. Comput. \textbf{66} (2017), 1281--1292.
 
+\bibitem[Pin310]{Pin310}
+R.~Pinho, \emph{An explicit instance of Bir\'o's strict lower bound}, unrefereed (2 November 2026), Optimization Constants repository, pull request \#310, \url{https://github.com/teorth/optimizationproblems/pull/310}; proof and checker at \url{https://github.com/rpinho/math-certificates/tree/36325fade4b73afb787c37ee8cc4c90ae4adf856/c42/biro-explicit-lower}.
+
 \bibitem[Rep]{Rep}
-V.~Bakeas, \emph{An explicit lower bound in Tur\'an's pure power sum problem: note and checkers}, version 1.0.0 (2026), \url{https://github.com/Bakeas/turan-explicit-lower-bound}.
+V.~Bakeas, \emph{An explicit lower bound in Tur\'an's pure power sum problem: note and checkers}, version 1.0.1 (2026), \url{https://github.com/Bakeas/turan-explicit-lower-bound}; version 1.0.0: doi:10.5281/zenodo.23961978.
 
 \bibitem[Tao]{Tao}
 T.~Tao et al., \emph{Optimization constants repository}, constant $C_{42}$, \url{https://teorth.github.io/optimizationproblems/constants/42a.html}.
