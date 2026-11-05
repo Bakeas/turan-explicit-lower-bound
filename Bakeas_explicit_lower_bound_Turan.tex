@@ -43,7 +43,7 @@
 \email{bakeasb@gmail.com}
 \urladdr{https://orcid.org/0009-0002-9714-9372}
 
-\date{November 2026 (version 1.0.1). Unrefereed.}
+\date{November 2026 (version 1.0.2). Unrefereed.}
 
 \subjclass[2020]{Primary 11N30; Secondary 30A10, 65G30}
 \keywords{Tur\'an's pure power sum problem, power sums, Erd\H{o}s problem \#519, explicit constants, interval arithmetic}
@@ -344,7 +344,7 @@ R.~Pinho \cite{Pin310} replaces the second half of Lemma~8 (the threshold $H=1-\
 \[
 g_{t+1}\le\Bigl(1-\frac{w_t}{3}\Bigr)g_t+2w_tE ,
 \]
-and with $w_t\ge1/t$ this yields $1-h_k\le6E+\prod_{t=t_0}^{k-1}\bigl(1-\tfrac1{3t}\bigr)\le6E+(t_0/k)^{1/3}$. So the deficit $1-h_k$ decays like a power of $k/t_0$, and not like $1/\log(k/t_0)$ as in Lemma~8b. Since $k/t_0$ can be taken to be a power of $1/\delta$, the logarithmic loss that dominates our Theorems~\ref{thm:main} and~\ref{thm:cons} disappears, and Pinho obtains $R_n>1/2+2^{-4096}$ for every $n$. His note was written and checked with AI models and has not been refereed. We have read it once and found no error, but we have not checked it independently.
+and with $w_t\ge1/t$ this yields $1-h_k\le6E+\prod_{t=t_0}^{k-1}\bigl(1-\tfrac1{3t}\bigr)\le6E+(t_0/k)^{1/3}$. So the deficit $1-h_k$ decays like a power of $k/t_0$, and not like $1/\log(k/t_0)$ as in Lemma~8b. Since $k/t_0$ can be taken to be a power of $1/\delta$, the logarithmic loss that dominates our Theorems~\ref{thm:main} and~\ref{thm:cons} disappears, and Pinho obtains $R_n>1/2+2^{-4096}$ for every $n$.    In his note (\texttt{LOWER\_PROOF.md} in the folder of \cite{Pin310}), the contraction is formulas (22)--(24) of his Section~5, and $t_0$ is chosen in his Section~4. His Sections~6--7 also appear to replace Bir\'o's Corollary~2 and the final step by a different argument. His note was written and checked with AI models and has not been refereed. The author has not checked it; the comparison above was made with AI help and has not been verified independently.
 
 Our Theorems~\ref{thm:main} and~\ref{thm:cons} are therefore far from the best explicit value. Their only interest is as an explicit version of Bir\'o's argument as it is written, with each of his constants identified (Table~\ref{tab:constants}). Pinho's contraction could be combined with the sharper constants of this note; we have not done this.
 
@@ -505,10 +505,10 @@ The FLINT team, \emph{FLINT: Fast Library for Number Theory}, \url{https://flint
 F.~Johansson, \emph{Arb: efficient arbitrary-precision midpoint-radius interval arithmetic}, IEEE Trans. Comput. \textbf{66} (2017), 1281--1292.
 
 \bibitem[Pin310]{Pin310}
-R.~Pinho, \emph{An explicit instance of Bir\'o's strict lower bound}, unrefereed (2 November 2026), Optimization Constants repository, pull request \#310, \url{https://github.com/teorth/optimizationproblems/pull/310}; proof and checker at \url{https://github.com/rpinho/math-certificates/tree/36325fade4b73afb787c37ee8cc4c90ae4adf856/c42/biro-explicit-lower}.
+R.~Pinho, \emph{An explicit instance of Bir\'o's strict lower bound}, unrefereed (2 November 2026), Optimization Constants repository, pull request \#310, \url{https://github.com/teorth/optimizationproblems/pull/310}; proof and checker at \url{https://github.com/rpinho/math-certificates/tree/36325fade4b73afb787c37ee8cc4c90ae4adf856/c42/biro-explicit-lower}; written proof: \url{https://github.com/rpinho/math-certificates/blob/36325fade4b73afb787c37ee8cc4c90ae4adf856/c42/biro-explicit-lower/LOWER_PROOF.md}.
 
 \bibitem[Rep]{Rep}
-V.~Bakeas, \emph{An explicit lower bound in Tur\'an's pure power sum problem: note and checkers}, version 1.0.1 (2026), \url{https://github.com/Bakeas/turan-explicit-lower-bound}; version 1.0.0: doi:10.5281/zenodo.23961978.
+V.~Bakeas, \emph{An explicit lower bound in Tur\'an's pure power sum problem: note and checkers}, version 1.0.2 (2026), \url{https://github.com/Bakeas/turan-explicit-lower-bound}; version 1.0.0: doi:10.5281/zenodo.23961978.
 
 \bibitem[Tao]{Tao}
 T.~Tao et al., \emph{Optimization constants repository}, constant $C_{42}$, \url{https://teorth.github.io/optimizationproblems/constants/42a.html}.
